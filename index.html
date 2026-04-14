@@ -106,10 +106,12 @@ select.sbtn { appearance:none; -webkit-appearance:none; cursor:pointer; }
 .wcell { width:34px; min-width:34px; padding:4px 3px; text-align:center; background:var(--bg2); vertical-align:middle; }
 .wbar { height:26px; border-radius:4px; cursor:pointer; transition:opacity 0.15s; }
 .wbar:hover { opacity:0.8; }
-.w-empty{background:transparent;border:1px dashed var(--border)}
-.w-me{background:linear-gradient(90deg,#3b82f6,#2563eb)}
-.w-dev{background:linear-gradient(90deg,#8b5cf6,#7c3aed)}
-.w-both{background:linear-gradient(90deg,#10b981,#059669)}
+.w-empty  { background:transparent; border:1px dashed var(--border); }
+.w-todo   { background:#334155; }
+.w-doing  { background:linear-gradient(90deg,#92400e,#b45309); }
+.w-done   { background:linear-gradient(90deg,#14532d,#166534); }
+.w-hold   { background:linear-gradient(90deg,#3b1f6b,#4c1d95); }
+.w-review { background:linear-gradient(90deg,#1e3a8a,#1e40af); }
 
 .tnote-td { padding:0 !important; }
 .tnote { font-size:0.68em; color:var(--text3); padding:2px 10px 6px 38px; background:var(--bg2); outline:none; border-bottom:1px dashed transparent; display:block; width:100%; }
@@ -155,7 +157,8 @@ let saveTimers = {}
 
 const ASSIGNEES   = ['이윤희','이순구','공동']
 const STATUSES    = ['예정','진행중','완료','보류','검토중']
-const WBAR_STATES = ['w-empty','w-me','w-dev','w-both']
+const WBAR_STATES = ['w-empty','w-todo','w-doing','w-done','w-hold','w-review']
+const STATUS_BAR  = {'예정':'w-todo','진행중':'w-doing','완료':'w-done','보류':'w-hold','검토중':'w-review'}
 const WEEKS       = ['W1|4/14','W2|4/21','W3|4/28','W4|5/5','W5|5/12','W6|5/19','W7|5/26','W8|6/2','W9|6/9','W10|6/16','W11|6/23','W12|6/30']
 const WEEK_DATES  = ['2026-04-14','2026-04-21','2026-04-28','2026-05-05','2026-05-12','2026-05-19','2026-05-26','2026-06-02','2026-06-09','2026-06-16','2026-06-23','2026-06-30']
 const PH_GRADIENTS = [
@@ -471,6 +474,7 @@ async function changeStatus(id,value){
   const sel=document.querySelector(`#trow-${id} .sbtn`)
   if(sel) sel.className='sbtn '+(map[value]||'s-todo')
   const sw=document.getElementById('summary-wrap'); if(sw) sw.innerHTML=renderSummary()
+  autoFillWeekBars(id)
   // 퍼센트 업데이트
   const phaseId=Object.keys(state.tasks).find(pid=>state.tasks[pid].some(t=>t.id===id))
   if(phaseId){
@@ -517,16 +521,11 @@ function updateTaskDur(input){
   if(el) el.textContent=calcDur(inputs[0]?.value,inputs[1]?.value)||''
   autoFillWeekBars(taskId)
 }
-function getBarFromAssignee(assignee){
-  if(assignee==='이순구') return 'w-dev'
-  if(assignee==='공동') return 'w-both'
-  return 'w-me'
-}
 async function autoFillWeekBars(taskId){
   const task=findTask(taskId)
   if(!task||!task.start_date||!task.end_date) return
   const start=new Date(task.start_date), end=new Date(task.end_date)
-  const bar=getBarFromAssignee(task.assignee)
+  const bar=STATUS_BAR[task.status||'예정']||'w-todo'
   const bars=WEEK_DATES.map(wd=>{
     const wStart=new Date(wd), wEnd=new Date(wStart.getTime()+6*86400000)
     return (wStart<=end && wEnd>=start) ? bar : 'w-empty'
