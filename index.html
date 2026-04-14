@@ -242,6 +242,10 @@ function renderSummary() {
 function renderPhase(phase) {
   const tasks = state.tasks[phase.id]||[]
   const dur = calcDur(phase.start_date,phase.end_date)
+  const total = tasks.length
+  const done = tasks.filter(t=>t.status==='완료').length
+  const pct = total > 0 ? Math.round(done/total*100) : 0
+  const pctColor = pct===100 ? '#4ade80' : pct>=50 ? '#fbbf24' : '#94a3b8'
   const wkHeader = '<th style="min-width:340px;width:340px">작업</th>' +
     WEEKS.map(w=>{ const[n,d]=w.split('|'); return `<th class="wth"><span style="font-size:.65em;display:block">${n}</span><span style="font-size:.58em;display:block;opacity:.5">${d}</span></th>` }).join('')
   return `
@@ -250,6 +254,7 @@ function renderPhase(phase) {
       <span class="ph-drag" onclick="event.stopPropagation()" title="드래그하여 페이즈 순서 변경">⠿</span>
       <span style="font-size:1.2em">${phase.icon}</span>
       <input class="ph-title-edit" value="${esc(phase.title)}" onclick="event.stopPropagation()" onblur="savePhaseTitle('${phase.id}',this.value)" onkeydown="if(event.key==='Enter')this.blur()">
+      <span style="font-size:0.78em;font-weight:700;color:${pctColor};background:rgba(0,0,0,0.2);padding:2px 8px;border-radius:10px;white-space:nowrap" id="ph-pct-${phase.id}">${pct}%</span>
       <div class="ph-meta" onclick="event.stopPropagation()">
         <input type="date" class="ph-date" value="${phase.start_date||''}" onchange="savePhase('${phase.id}',{start_date:this.value});updatePhaseDur(this)">
         <span style="opacity:.6">–</span>
@@ -462,6 +467,15 @@ async function cycleStatus(id,current){
   const btn=document.querySelector(`#trow-${id} .sbtn`)
   if(btn){btn.textContent=next;btn.className='sbtn '+map[next]}
   const sw=document.getElementById('summary-wrap'); if(sw) sw.innerHTML=renderSummary()
+  // 퍼센트 업데이트
+  const phaseId=Object.keys(state.tasks).find(pid=>state.tasks[pid].some(t=>t.id===id))
+  if(phaseId){
+    const tasks=state.tasks[phaseId]
+    const total=tasks.length, done=tasks.filter(t=>t.status==='완료').length
+    const pct=total>0?Math.round(done/total*100):0
+    const pctEl=document.getElementById('ph-pct-'+phaseId)
+    if(pctEl){pctEl.textContent=pct+'%';pctEl.style.color=pct===100?'#4ade80':pct>=50?'#fbbf24':'#94a3b8'}
+  }
 }
 async function cyclePriority(id,current){
   const prios=['high','mid','low']
