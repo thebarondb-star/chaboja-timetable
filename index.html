@@ -280,7 +280,7 @@ function renderPhase(phase) {
 
 function renderTask(t) {
   const bars = (t.week_bars||Array(12).fill('')).map((b,i)=>
-    `<td><div class="wcell"><div class="wbar ${b||'w-empty'}" onclick="toggleWeekBar('${t.id}',${i},'${b||''}')"></div></div></td>`
+    `<td><div class="wcell"><div class="wbar ${b||'w-empty'}" onclick="toggleWeekBar('${t.id}',${i})"></div></div></td>`
   ).join('')
   const dur = calcDur(t.start_date,t.end_date)
   const aClass = t.assignee==='이순구'?'a-dev':t.assignee==='공동'?'a-both':'a-me'
@@ -493,9 +493,10 @@ async function cyclePriority(id){
   const dot=document.querySelector(`#trow-${id} .pdot`)
   if(dot) dot.className='pdot p-'+next
 }
-async function toggleWeekBar(id,idx,current){
+async function toggleWeekBar(id,idx){
   const task=findTask(id); if(!task) return
   const bars=[...(task.week_bars||Array(12).fill(''))]
+  const current=bars[idx]||''
   const next=WBAR_STATES[(WBAR_STATES.indexOf(current)+1)%WBAR_STATES.length]
   bars[idx]=next; task.week_bars=bars
   await db.from('tt_tasks').update({week_bars:bars}).eq('id',id)
@@ -523,8 +524,9 @@ function updateTaskDur(input){
 }
 async function autoFillWeekBars(taskId){
   const task=findTask(taskId)
-  if(!task||!task.start_date||!task.end_date) return
-  const start=new Date(task.start_date), end=new Date(task.end_date)
+  if(!task||(!task.start_date&&!task.end_date)) return
+  const start=task.start_date ? new Date(task.start_date) : new Date(task.end_date)
+  const end=task.end_date ? new Date(task.end_date) : new Date(task.start_date)
   const bar=STATUS_BAR[task.status||'예정']||'w-todo'
   const bars=WEEK_DATES.map(wd=>{
     const wStart=new Date(wd), wEnd=new Date(wStart.getTime()+6*86400000)
