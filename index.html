@@ -91,6 +91,7 @@ body { font-family:'Malgun Gothic','Apple SD Gothic Neo',sans-serif; background:
 .s-todo{background:var(--bg2);color:var(--text3);border:1px solid var(--border)!important}
 .s-doing{background:#92400e;color:#fcd34d} .s-done{background:#14532d;color:#86efac}
 .s-hold{background:#3b1f6b;color:#c4b5fd} .s-review{background:#1e3a8a;color:#93c5fd}
+select.sbtn { appearance:none; -webkit-appearance:none; cursor:pointer; }
 
 .tdates { display:flex; align-items:center; gap:4px; padding-left:26px; }
 .tdlabel { font-size:0.62em; color:var(--text4); }
@@ -156,6 +157,7 @@ const ASSIGNEES   = ['이윤희','이순구','공동']
 const STATUSES    = ['예정','진행중','완료','보류','검토중']
 const WBAR_STATES = ['w-empty','w-me','w-dev','w-both']
 const WEEKS       = ['W1|4/14','W2|4/21','W3|4/28','W4|5/5','W5|5/12','W6|5/19','W7|5/26','W8|6/2','W9|6/9','W10|6/16','W11|6/23','W12|6/30']
+const WEEK_DATES  = ['2026-04-14','2026-04-21','2026-04-28','2026-05-05','2026-05-12','2026-05-19','2026-05-26','2026-06-02','2026-06-09','2026-06-16','2026-06-23','2026-06-30']
 const PH_GRADIENTS = [
   'linear-gradient(135deg,#1a3a2a,#059669)','linear-gradient(135deg,#1a2a3a,#0284c7)',
   'linear-gradient(135deg,#1e3a5f,#1d4ed8)','linear-gradient(135deg,#7c2d12,#ea580c)',
@@ -291,7 +293,9 @@ function renderTask(t) {
           <span class="tnum">${esc(t.task_num||'')}</span>
           <span class="ttitle" contenteditable="true" onblur="debounceSave('${t.id}',{title:this.textContent.trim()})">${esc(t.title)}</span>
           <button class="abtn ${aClass}" onclick="cycleAssignee('${t.id}')">${t.assignee||'이윤희'}</button>
-          <button class="sbtn ${sClass}" onclick="cycleStatus('${t.id}')">${t.status||'예정'}</button>
+          <select class="sbtn ${sClass}" onchange="changeStatus('${t.id}',this.value)">
+            ${STATUSES.map(s=>`<option value="${s}" ${(t.status||'예정')===s?'selected':''}>${s}</option>`).join('')}
+          </select>
         </div>
         <div class="tdates">
           <span class="tdlabel">시작</span>
@@ -461,13 +465,11 @@ function rerenderSubtasks(taskId){
       <button class="st-del" onclick="deleteSubtask('${taskId}',${i})">×</button>
     </div>`).join('')+`<button class="st-add-btn" onclick="addSubtask('${taskId}')">＋ 세부작업</button>`
 }
-async function cycleStatus(id){
-  const task=findTask(id); if(!task) return
-  const next=STATUSES[(STATUSES.indexOf(task.status)+1)%STATUSES.length]
-  await saveTask(id,{status:next})
+async function changeStatus(id,value){
+  await saveTask(id,{status:value})
   const map={'예정':'s-todo','진행중':'s-doing','완료':'s-done','보류':'s-hold','검토중':'s-review'}
-  const btn=document.querySelector(`#trow-${id} .sbtn`)
-  if(btn){btn.textContent=next;btn.className='sbtn '+map[next]}
+  const sel=document.querySelector(`#trow-${id} .sbtn`)
+  if(sel) sel.className='sbtn '+(map[value]||'s-todo')
   const sw=document.getElementById('summary-wrap'); if(sw) sw.innerHTML=renderSummary()
   // 퍼센트 업데이트
   const phaseId=Object.keys(state.tasks).find(pid=>state.tasks[pid].some(t=>t.id===id))
@@ -513,6 +515,30 @@ function updateTaskDur(input){
   const row=input.closest('tr'), taskId=row.id.replace('trow-','')
   const inputs=row.querySelectorAll('.tdinput'), el=document.getElementById('tdur-'+taskId)
   if(el) el.textContent=calcDur(inputs[0]?.value,inputs[1]?.value)||''
+  autoFillWeekBars(taskId)
+}
+function getBarFromAssignee(assignee){
+  if(assignee==='이순구') return 'w-dev'
+  if(assignee==='공동') return 'w-both'
+  return 'w-me'
+}
+async function autoFillWeekBars(taskId){
+  const task=findTask(taskId)
+  if(!task||!task.start_date||!task.end_date) return
+  const start=new Date(task.start_date), end=new Date(task.end_date)
+  const bar=getBarFromAssignee(task.assignee)
+  const bars=WEEK_DATES.map(wd=>{
+    const wStart=new Date(wd), wEnd=new Date(wStart.getTime()+6*86400000)
+    return (wStart<=end && wEnd>=start) ? bar : 'w-empty'
+  })
+  task.week_bars=bars
+  await db.from('tt_tasks').update({week_bars:bars}).eq('id',taskId)
+  const row=document.getElementById('trow-'+taskId)
+  if(row) bars.forEach((b,i)=>{
+    const el=row.querySelector(`td:nth-child(${i+2}) .wbar`)
+    if(el) el.className='wbar '+(b||'w-empty')
+  })
+  showSaved()
 }
 
 // ─── 페이즈 접기 ───
