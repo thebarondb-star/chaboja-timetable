@@ -8,34 +8,15 @@
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --bg:   #0f172a;
-  --bg2:  #1e293b;
-  --bg3:  #0f172a;
-  --bg4:  #182030;
-  --bg5:  #243044;
-  --text:  #e2e8f0;
-  --text2: #94a3b8;
-  --text3: #64748b;
-  --text4: #475569;
-  --border: #334155;
-  --input-bg: #0f172a;
-  --note-ph: #2a3a4e;
+  --bg:   #0f172a; --bg2: #1e293b; --bg3: #0f172a; --bg4: #182030; --bg5: #243044;
+  --text: #e2e8f0; --text2: #94a3b8; --text3: #64748b; --text4: #475569;
+  --border: #334155; --input-bg: #0f172a; --note-ph: #2a3a4e;
 }
 body.light {
-  --bg:   #f1f5f9;
-  --bg2:  #ffffff;
-  --bg3:  #f8fafc;
-  --bg4:  #e2e8f0;
-  --bg5:  #dde4ef;
-  --text:  #1e293b;
-  --text2: #475569;
-  --text3: #64748b;
-  --text4: #94a3b8;
-  --border: #e2e8f0;
-  --input-bg: #f1f5f9;
-  --note-ph: #cbd5e1;
+  --bg: #f1f5f9; --bg2: #ffffff; --bg3: #f8fafc; --bg4: #e2e8f0; --bg5: #dde4ef;
+  --text: #1e293b; --text2: #475569; --text3: #64748b; --text4: #94a3b8;
+  --border: #e2e8f0; --input-bg: #f1f5f9; --note-ph: #cbd5e1;
 }
-
 body { font-family:'Malgun Gothic','Apple SD Gothic Neo',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; transition:background .25s,color .25s; }
 
 .header { background:linear-gradient(135deg,#1e3a8a,#2563eb); padding:20px 36px; display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; }
@@ -48,7 +29,7 @@ body { font-family:'Malgun Gothic','Apple SD Gothic Neo',sans-serif; background:
 .hdr-btn { background:rgba(255,255,255,0.2); border:1px solid rgba(255,255,255,0.3); color:white; padding:5px 12px; border-radius:7px; cursor:pointer; font-family:inherit; font-size:0.8em; white-space:nowrap; }
 .hdr-btn:hover { background:rgba(255,255,255,0.3); }
 
-.statusbar { background:var(--bg2); padding:10px 36px; display:flex; gap:20px; align-items:center; flex-wrap:wrap; border-bottom:1px solid var(--border); font-size:0.75em; color:var(--text2); transition:background .25s; }
+.statusbar { background:var(--bg2); padding:10px 36px; display:flex; gap:20px; align-items:center; flex-wrap:wrap; border-bottom:1px solid var(--border); font-size:0.75em; color:var(--text2); }
 .legend { display:flex; align-items:center; gap:5px; }
 .ldot { width:9px; height:9px; border-radius:2px; }
 .tip { margin-left:auto; font-size:0.72em; color:var(--text4); }
@@ -56,14 +37,26 @@ body { font-family:'Malgun Gothic','Apple SD Gothic Neo',sans-serif; background:
 .container { padding:20px 36px 60px; max-width:1440px; margin:0 auto; }
 
 .summary { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-bottom:20px; }
-.sum-card { background:var(--bg2); border-radius:10px; padding:12px 16px; border:1px solid var(--border); transition:background .25s; }
+.sum-card { background:var(--bg2); border-radius:10px; padding:12px 16px; border:1px solid var(--border); }
 .sum-card .n { font-size:1.6em; font-weight:800; margin-bottom:2px; }
 .sum-card .l { font-size:0.72em; color:var(--text3); }
-.c-blue .n { color:#60a5fa; } .c-green .n { color:#4ade80; } .c-yellow .n { color:#fbbf24; } .c-purple .n { color:#c084fc; }
+.c-blue .n{color:#60a5fa} .c-green .n{color:#4ade80} .c-yellow .n{color:#fbbf24} .c-purple .n{color:#c084fc}
 
+/* ─── 페이즈 ─── */
 .phase-block { margin-bottom:20px; border-radius:12px; overflow:hidden; box-shadow:0 4px 20px rgba(0,0,0,0.3); }
+.phase-block.sortable-ghost { opacity:0.4; }
+.phase-block.sortable-chosen { box-shadow:0 0 0 2px #3b82f6, 0 4px 20px rgba(0,0,0,0.4); }
 .phase-header { padding:12px 18px; display:flex; align-items:center; gap:10px; cursor:pointer; user-select:none; }
 .phase-header:hover { filter:brightness(1.08); }
+
+/* 드래그 핸들 */
+.ph-drag { cursor:grab; opacity:0.5; font-size:1.1em; padding:2px 4px; border-radius:4px; flex-shrink:0; line-height:1; }
+.ph-drag:hover { opacity:1; background:rgba(255,255,255,0.15); }
+.ph-drag:active { cursor:grabbing; }
+.task-drag { cursor:grab; opacity:0.3; font-size:1em; padding:1px 3px; flex-shrink:0; line-height:1; color:var(--text3); }
+.task-drag:hover { opacity:0.8; }
+.task-drag:active { cursor:grabbing; }
+
 .ph-title-edit { font-weight:700; font-size:0.95em; flex:1; outline:none; background:transparent; border:none; border-bottom:1px dashed transparent; color:white; font-family:inherit; cursor:text; }
 .ph-title-edit:focus { border-bottom-color:rgba(255,255,255,0.5); }
 .ph-meta { display:flex; align-items:center; gap:5px; }
@@ -73,57 +66,68 @@ body { font-family:'Malgun Gothic','Apple SD Gothic Neo',sans-serif; background:
 .ph-toggle { font-size:0.8em; opacity:0.7; transition:transform 0.2s; }
 .ph-toggle.open { transform:rotate(90deg); }
 
-.gantt-wrap { background:var(--bg2); overflow-x:auto; transition:background .25s; }
+/* ─── 테이블 ─── */
+.gantt-wrap { background:var(--bg2); overflow-x:auto; }
 .gtable { width:100%; border-collapse:collapse; min-width:960px; }
-.gtable th { background:var(--bg3); color:var(--text3); font-size:0.68em; font-weight:600; padding:7px 5px; border-bottom:1px solid var(--border); white-space:nowrap; text-align:left; transition:background .25s; }
+.gtable thead th { background:var(--bg3); color:var(--text3); font-size:0.68em; font-weight:600; padding:7px 5px; border-bottom:1px solid var(--border); white-space:nowrap; text-align:left; }
 .gtable th.wth { text-align:center; width:34px; min-width:34px; }
-.gtable td { padding:0; border-bottom:1px solid var(--bg4); vertical-align:top; }
-.gtable tr:last-child td { border-bottom:none; }
-.gtable tr:hover .tcell { background:var(--bg5); }
+.gtable tbody.task-group { border-bottom:1px solid var(--bg4); }
+.gtable tbody.task-group:last-of-type { border-bottom:none; }
+.gtable tbody.task-group.sortable-ghost { opacity:0.3; }
+.gtable tbody.task-group.sortable-chosen td { background:var(--bg5); }
+.gtable tbody.task-group tr:hover .tcell { background:var(--bg5); }
+.gtable tfoot td { padding:0; }
 
-.tcell { padding:8px 10px; background:var(--bg2); min-width:340px; max-width:340px; width:340px; display:flex; flex-direction:column; gap:4px; transition:background .25s; }
-.tmain { display:flex; align-items:center; gap:6px; }
-.tnum { color:var(--text4); font-size:0.68em; min-width:22px; flex-shrink:0; }
+/* ─── 작업 셀 ─── */
+.tcell { padding:8px 10px; background:var(--bg2); min-width:340px; max-width:340px; width:340px; display:flex; flex-direction:column; gap:4px; }
+.tmain { display:flex; align-items:center; gap:5px; }
+.tnum { color:var(--text4); font-size:0.68em; min-width:18px; flex-shrink:0; }
 .ttitle { font-size:0.83em; flex:1; outline:none; border-bottom:1px dashed transparent; line-height:1.4; cursor:text; color:var(--text); }
 .ttitle:focus { border-bottom-color:#3b82f6; }
 .ttitle:empty:before { content:'작업명 입력...'; color:var(--text4); }
 
 .abtn,.sbtn { font-size:0.68em; padding:2px 7px; border-radius:10px; border:none; outline:none; font-family:inherit; cursor:pointer; white-space:nowrap; flex-shrink:0; }
-.a-me   { background:#1d4ed8; color:#bfdbfe; }
-.a-dev  { background:#7c3aed; color:#ede9fe; }
-.a-both { background:#065f46; color:#a7f3d0; }
-.s-todo   { background:var(--bg2); color:var(--text3); border:1px solid var(--border) !important; }
-.s-doing  { background:#92400e; color:#fcd34d; }
-.s-done   { background:#14532d; color:#86efac; }
-.s-hold   { background:#3b1f6b; color:#c4b5fd; }
-.s-review { background:#1e3a8a; color:#93c5fd; }
+.a-me{background:#1d4ed8;color:#bfdbfe} .a-dev{background:#7c3aed;color:#ede9fe} .a-both{background:#065f46;color:#a7f3d0}
+.s-todo{background:var(--bg2);color:var(--text3);border:1px solid var(--border)!important}
+.s-doing{background:#92400e;color:#fcd34d} .s-done{background:#14532d;color:#86efac}
+.s-hold{background:#3b1f6b;color:#c4b5fd} .s-review{background:#1e3a8a;color:#93c5fd}
 
-.tdates { display:flex; align-items:center; gap:4px; padding-left:28px; }
+.tdates { display:flex; align-items:center; gap:4px; padding-left:26px; }
 .tdlabel { font-size:0.62em; color:var(--text4); }
-.tdinput { background:var(--input-bg); border:1px solid var(--border); color:var(--text2); padding:1px 4px; border-radius:4px; font-size:0.65em; font-family:inherit; width:104px; cursor:pointer; transition:background .25s; }
+.tdinput { background:var(--input-bg); border:1px solid var(--border); color:var(--text2); padding:1px 4px; border-radius:4px; font-size:0.65em; font-family:inherit; width:104px; cursor:pointer; }
 .tdinput:focus { outline:none; border-color:#3b82f6; color:var(--text); }
 .tdsep { color:var(--text4); font-size:0.65em; }
 .tddur { font-size:0.62em; color:var(--text4); }
 
 .pdot { width:6px; height:6px; border-radius:50%; flex-shrink:0; }
-.p-high { background:#ef4444; } .p-mid { background:#f59e0b; } .p-low { background:#22c55e; }
+.p-high{background:#ef4444} .p-mid{background:#f59e0b} .p-low{background:#22c55e}
 
-.wcell { width:34px; min-width:34px; padding:4px 3px; text-align:center; background:var(--bg2); vertical-align:middle; transition:background .25s; }
+.wcell { width:34px; min-width:34px; padding:4px 3px; text-align:center; background:var(--bg2); vertical-align:middle; }
 .wbar { height:26px; border-radius:4px; cursor:pointer; transition:opacity 0.15s; }
 .wbar:hover { opacity:0.8; }
-.w-empty  { background:transparent; border:1px dashed var(--border); }
-.w-me     { background:linear-gradient(90deg,#3b82f6,#2563eb); }
-.w-dev    { background:linear-gradient(90deg,#8b5cf6,#7c3aed); }
-.w-both   { background:linear-gradient(90deg,#10b981,#059669); }
+.w-empty{background:transparent;border:1px dashed var(--border)}
+.w-me{background:linear-gradient(90deg,#3b82f6,#2563eb)}
+.w-dev{background:linear-gradient(90deg,#8b5cf6,#7c3aed)}
+.w-both{background:linear-gradient(90deg,#10b981,#059669)}
 
-.tnote-row td { padding:0 !important; }
-.tnote { font-size:0.68em; color:var(--text3); padding:2px 10px 5px 40px; background:var(--bg2); outline:none; border-bottom:1px dashed transparent; display:block; width:100%; transition:background .25s; }
+.tnote-td { padding:0 !important; }
+.tnote { font-size:0.68em; color:var(--text3); padding:2px 10px 6px 38px; background:var(--bg2); outline:none; border-bottom:1px dashed transparent; display:block; width:100%; }
 .tnote:focus { border-bottom-color:#3b82f6; color:var(--text2); }
 .tnote:empty:before { content:'메모...'; color:var(--note-ph); }
 
+.subtasks-wrap { padding:4px 10px 6px 38px; background:var(--bg2); }
+.subtask-row { display:flex; align-items:center; gap:6px; padding:2px 0; }
+.subtask-row input[type=checkbox] { cursor:pointer; flex-shrink:0; }
+.subtask-title { font-size:0.72em; color:var(--text2); flex:1; outline:none; border-bottom:1px dashed transparent; cursor:text; }
+.subtask-title:focus { border-bottom-color:#3b82f6; }
+.subtask-title.st-done { text-decoration:line-through; color:var(--text4); }
+.st-del { background:none; border:none; color:var(--text4); cursor:pointer; font-size:0.85em; padding:0 2px; opacity:0.4; }
+.st-del:hover { opacity:1; color:#ef4444; }
+.st-add-btn { background:none; border:none; color:var(--text4); cursor:pointer; font-size:0.7em; padding:3px 0; opacity:0.5; font-family:inherit; }
+.st-add-btn:hover { opacity:1; color:var(--text2); }
+
 .add-btn { background:none; border:1px dashed var(--border); color:var(--text4); padding:7px; width:100%; cursor:pointer; font-size:0.75em; transition:all 0.2s; font-family:inherit; }
 .add-btn:hover { background:var(--bg5); color:var(--text2); }
-
 .add-phase-btn { display:block; width:100%; padding:14px; background:none; border:2px dashed var(--border); border-radius:12px; color:var(--text3); font-size:0.85em; font-family:inherit; cursor:pointer; transition:all 0.2s; margin-top:8px; }
 .add-phase-btn:hover { background:var(--bg2); color:var(--text2); border-color:var(--text3); }
 
@@ -133,11 +137,11 @@ body { font-family:'Malgun Gothic','Apple SD Gothic Neo',sans-serif; background:
 </style>
 </head>
 <body>
-
 <div id="app"><div class="loading">⏳ 데이터 불러오는 중...</div></div>
 <div class="save-indicator" id="save-indicator">✓ 저장됨</div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.3/Sortable.min.js"></script>
 <script>
 const SUPABASE_URL = 'https://sktfscayhmyiztgjzsde.supabase.co'
 const SUPABASE_KEY = 'sb_publishable_9oZp0It0Nx4zd86JOYGKYQ_jMkuslhv'
@@ -145,33 +149,27 @@ const SUPABASE_KEY = 'sb_publishable_9oZp0It0Nx4zd86JOYGKYQ_jMkuslhv'
 const { createClient } = supabase
 const db = createClient(SUPABASE_URL, SUPABASE_KEY)
 
-let state = { settings: {}, phases: [], tasks: {} }
+let state = { settings:{}, phases:[], tasks:{} }
 let saveTimers = {}
 
-const ASSIGNEES    = ['나','개발자','공동']
-const STATUSES     = ['예정','진행중','완료','보류','검토중']
-const WBAR_STATES  = ['w-empty','w-me','w-dev','w-both']
-const WEEKS        = ['W1|4/14','W2|4/21','W3|4/28','W4|5/5','W5|5/12','W6|5/19','W7|5/26','W8|6/2','W9|6/9','W10|6/16','W11|6/23','W12|6/30']
+const ASSIGNEES   = ['이윤희','이순구','공동']
+const STATUSES    = ['예정','진행중','완료','보류','검토중']
+const WBAR_STATES = ['w-empty','w-me','w-dev','w-both']
+const WEEKS       = ['W1|4/14','W2|4/21','W3|4/28','W4|5/5','W5|5/12','W6|5/19','W7|5/26','W8|6/2','W9|6/9','W10|6/16','W11|6/23','W12|6/30']
 const PH_GRADIENTS = [
-  'linear-gradient(135deg,#1a3a2a,#059669)',
-  'linear-gradient(135deg,#1a2a3a,#0284c7)',
-  'linear-gradient(135deg,#1e3a5f,#1d4ed8)',
-  'linear-gradient(135deg,#7c2d12,#ea580c)',
-  'linear-gradient(135deg,#064e3b,#059669)',
-  'linear-gradient(135deg,#713f12,#ca8a04)',
-  'linear-gradient(135deg,#4c0519,#be123c)',
-  'linear-gradient(135deg,#2d1b69,#7c3aed)',
+  'linear-gradient(135deg,#1a3a2a,#059669)','linear-gradient(135deg,#1a2a3a,#0284c7)',
+  'linear-gradient(135deg,#1e3a5f,#1d4ed8)','linear-gradient(135deg,#7c2d12,#ea580c)',
+  'linear-gradient(135deg,#064e3b,#059669)','linear-gradient(135deg,#713f12,#ca8a04)',
+  'linear-gradient(135deg,#4c0519,#be123c)','linear-gradient(135deg,#2d1b69,#7c3aed)',
   'linear-gradient(135deg,#0c4a6e,#0ea5e9)',
 ]
 const PH_ICONS = ['📋','🗃️','💬','🚀','💰','🧮','📊','✅','🔧','⚡','🎯','📱']
 
-;(function() {
-  if (localStorage.getItem('theme') === 'light') document.body.classList.add('light')
-})()
+;(function(){ if(localStorage.getItem('theme')==='light') document.body.classList.add('light') })()
 
 async function init() {
   try {
-    const [{ data: s }, { data: ph }, { data: tk }] = await Promise.all([
+    const [{ data:s },{ data:ph },{ data:tk }] = await Promise.all([
       db.from('tt_settings').select('*').single(),
       db.from('tt_phases').select('*').order('sort_order'),
       db.from('tt_tasks').select('*').order('sort_order')
@@ -179,20 +177,19 @@ async function init() {
     state.settings = s || { name:'CHABOJA ERP 타임테이블', start_date:'', end_date:'' }
     state.phases = ph || []
     state.tasks = {}
-    ;(tk || []).forEach(t => {
-      if (!state.tasks[t.phase_id]) state.tasks[t.phase_id] = []
+    ;(tk||[]).forEach(t => {
+      if(!state.tasks[t.phase_id]) state.tasks[t.phase_id]=[]
       state.tasks[t.phase_id].push(t)
     })
     render()
     subscribe()
   } catch(e) {
-    document.getElementById('app').innerHTML = '<div class="loading">❌ 연결 실패.<br><small>' + e.message + '</small></div>'
+    document.getElementById('app').innerHTML = '<div class="loading">❌ 연결 실패.<br><small>'+e.message+'</small></div>'
   }
 }
 
 function render() {
   const s = state.settings
-  const dur = calcDur(s.start_date, s.end_date)
   const isLight = document.body.classList.contains('light')
   document.getElementById('app').innerHTML = `
     <div class="header">
@@ -203,12 +200,12 @@ function render() {
           <input type="date" class="hdr-input" id="proj-start" value="${s.start_date||''}" onchange="saveSetting('start_date',this.value);updateDur()">
           <span style="opacity:.6">완료예정</span>
           <input type="date" class="hdr-input" id="proj-end" value="${s.end_date||''}" onchange="saveSetting('end_date',this.value);updateDur()">
-          <span id="proj-dur" style="opacity:.6">${dur}</span>
+          <span id="proj-dur" style="opacity:.6">${calcDur(s.start_date,s.end_date)}</span>
         </div>
       </div>
       <div class="hdr-btns">
         <span class="badge">🔵 나 &nbsp;🟣 개발자 &nbsp;🟢 공동</span>
-        <button id="theme-btn" class="hdr-btn" onclick="toggleTheme()">${isLight ? '🌙 다크' : '☀️ 라이트'}</button>
+        <button id="theme-btn" class="hdr-btn" onclick="toggleTheme()">${isLight?'🌙 다크':'☀️ 라이트'}</button>
         <button class="hdr-btn" onclick="window.print()">🖨 인쇄</button>
       </div>
     </div>
@@ -217,29 +214,23 @@ function render() {
       ${[['#334155','예정'],['#92400e','진행중'],['#14532d','완료'],['#3b1f6b','보류'],['#1e3a8a','검토중']].map(([c,t])=>`<div class="legend"><span class="ldot" style="background:${c}"></span>${t}</div>`).join('')}
       <span style="margin-left:6px">우선순위:</span>
       ${[['#ef4444','높음'],['#f59e0b','중간'],['#22c55e','낮음']].map(([c,t])=>`<div class="legend"><span class="ldot" style="background:${c};border-radius:50%"></span>${t}</div>`).join('')}
-      <span class="tip">※ 작업명·메모 클릭=수정 | 담당자·상태=클릭 순환 | 날짜=달력 | 주간바=클릭 토글</span>
+      <span class="tip">⠿ 핸들 드래그로 순서 변경 | 작업명·메모 클릭=수정 | 담당자·상태=클릭 순환</span>
     </div>
     <div class="container">
       <div id="summary-wrap">${renderSummary()}</div>
-      <div id="phases-wrap">${state.phases.map(p => renderPhase(p)).join('')}</div>
+      <div id="phases-wrap">${state.phases.map(p=>renderPhase(p)).join('')}</div>
       <button class="add-phase-btn" onclick="addPhase()">＋ 페이즈 추가</button>
-    </div>
-  `
+    </div>`
+
   const nameEl = document.getElementById('proj-name')
-  if (nameEl) {
-    let t
-    nameEl.addEventListener('input', () => { clearTimeout(t); t = setTimeout(() => saveSetting('name', nameEl.textContent.trim()), 700) })
-  }
+  if(nameEl){ let t; nameEl.addEventListener('input',()=>{ clearTimeout(t); t=setTimeout(()=>saveSetting('name',nameEl.textContent.trim()),700) }) }
+
+  initSortable()
 }
 
 function renderSummary() {
   let total=0,done=0,doing=0,todo=0
-  Object.values(state.tasks).flat().forEach(t => {
-    total++
-    if (t.status==='완료') done++
-    else if (t.status==='진행중') doing++
-    else todo++
-  })
+  Object.values(state.tasks).flat().forEach(t=>{ total++; if(t.status==='완료')done++; else if(t.status==='진행중')doing++; else todo++ })
   return `<div class="summary">
     <div class="sum-card c-blue"><div class="n">${total}</div><div class="l">전체 작업</div></div>
     <div class="sum-card c-green"><div class="n">${done}</div><div class="l">완료</div></div>
@@ -249,27 +240,28 @@ function renderSummary() {
 }
 
 function renderPhase(phase) {
-  const tasks = state.tasks[phase.id] || []
-  const dur = calcDur(phase.start_date, phase.end_date)
+  const tasks = state.tasks[phase.id]||[]
+  const dur = calcDur(phase.start_date,phase.end_date)
   const wkHeader = '<th style="min-width:340px;width:340px">작업</th>' +
-    WEEKS.map(w => { const[n,d]=w.split('|'); return `<th class="wth"><span style="font-size:.65em;display:block">${n}</span><span style="font-size:.58em;display:block;opacity:.5">${d}</span></th>` }).join('')
+    WEEKS.map(w=>{ const[n,d]=w.split('|'); return `<th class="wth"><span style="font-size:.65em;display:block">${n}</span><span style="font-size:.58em;display:block;opacity:.5">${d}</span></th>` }).join('')
   return `
   <div class="phase-block" id="ph-${phase.id}">
     <div class="phase-header" style="background:${phase.gradient}" onclick="togglePhase('${phase.id}')">
+      <span class="ph-drag" onclick="event.stopPropagation()" title="드래그하여 페이즈 순서 변경">⠿</span>
       <span style="font-size:1.2em">${phase.icon}</span>
       <input class="ph-title-edit" value="${esc(phase.title)}" onclick="event.stopPropagation()" onblur="savePhaseTitle('${phase.id}',this.value)" onkeydown="if(event.key==='Enter')this.blur()">
       <div class="ph-meta" onclick="event.stopPropagation()">
         <input type="date" class="ph-date" value="${phase.start_date||''}" onchange="savePhase('${phase.id}',{start_date:this.value});updatePhaseDur(this)">
         <span style="opacity:.6">–</span>
         <input type="date" class="ph-date" value="${phase.end_date||''}" onchange="savePhase('${phase.id}',{end_date:this.value});updatePhaseDur(this)">
-        <span class="ph-dur" id="phdur-${phase.id}">${dur ? '('+dur+')' : ''}</span>
+        <span class="ph-dur" id="phdur-${phase.id}">${dur?'('+dur+')':''}</span>
       </div>
       <span class="ph-toggle open" id="phtog-${phase.id}">▶</span>
     </div>
     <div class="gantt-wrap" id="phbody-${phase.id}">
-      <table class="gtable">
+      <table class="gtable" id="gtable-${phase.id}">
         <thead><tr>${wkHeader}</tr></thead>
-        <tbody id="tbd-${phase.id}">${tasks.map(t => renderTask(t)).join('')}</tbody>
+        ${tasks.map(t=>renderTask(t)).join('')}
         <tfoot><tr><td colspan="13"><button class="add-btn" onclick="addTask('${phase.id}')">+ 작업 추가</button></td></tr></tfoot>
       </table>
     </div>
@@ -277,182 +269,278 @@ function renderPhase(phase) {
 }
 
 function renderTask(t) {
-  const bars = (t.week_bars || Array(12).fill('')).map((b,i) =>
+  const bars = (t.week_bars||Array(12).fill('')).map((b,i)=>
     `<td><div class="wcell"><div class="wbar ${b||'w-empty'}" onclick="toggleWeekBar('${t.id}',${i},'${b||''}')"></div></div></td>`
   ).join('')
-  const dur = calcDur(t.start_date, t.end_date)
-  const aClass = t.assignee==='개발자'?'a-dev':t.assignee==='공동'?'a-both':'a-me'
+  const dur = calcDur(t.start_date,t.end_date)
+  const aClass = t.assignee==='이순구'?'a-dev':t.assignee==='공동'?'a-both':'a-me'
   const sClass = {'예정':'s-todo','진행중':'s-doing','완료':'s-done','보류':'s-hold','검토중':'s-review'}[t.status]||'s-todo'
   const pClass = t.priority==='high'?'p-high':t.priority==='low'?'p-low':'p-mid'
   return `
-  <tr id="trow-${t.id}">
-    <td><div class="tcell">
-      <div class="tmain">
-        <span class="pdot ${pClass}" onclick="cyclePriority('${t.id}','${t.priority||'mid'}')" style="cursor:pointer" title="우선순위 변경"></span>
-        <span class="tnum">${esc(t.task_num||'')}</span>
-        <span class="ttitle" contenteditable="true" onblur="debounceSave('${t.id}',{title:this.textContent.trim()})">${esc(t.title)}</span>
-        <button class="abtn ${aClass}" onclick="cycleAssignee('${t.id}','${t.assignee||'나'}')">${t.assignee||'나'}</button>
-        <button class="sbtn ${sClass}" onclick="cycleStatus('${t.id}','${t.status||'예정'}')">${t.status||'예정'}</button>
-      </div>
-      <div class="tdates">
-        <span class="tdlabel">시작</span>
-        <input type="date" class="tdinput" value="${t.start_date||''}" onchange="saveTask('${t.id}',{start_date:this.value});updateTaskDur(this)">
-        <span class="tdsep">→</span>
-        <span class="tdlabel">완료</span>
-        <input type="date" class="tdinput" value="${t.end_date||''}" onchange="saveTask('${t.id}',{end_date:this.value});updateTaskDur(this)">
-        <span class="tddur" id="tdur-${t.id}">${dur||''}</span>
-      </div>
-    </div></td>
-    ${bars}
-  </tr>
-  <tr class="tnote-row" id="tnote-row-${t.id}">
-    <td colspan="13"><div class="tnote" contenteditable="true" onblur="debounceSave('${t.id}',{note:this.textContent.trim()})">${esc(t.note||'')}</div></td>
-  </tr>`
+  <tbody class="task-group" id="tg-${t.id}">
+    <tr id="trow-${t.id}">
+      <td><div class="tcell">
+        <div class="tmain">
+          <span class="task-drag" title="드래그하여 순서 변경">⠿</span>
+          <span class="pdot ${pClass}" onclick="cyclePriority('${t.id}','${t.priority||'mid'}')" style="cursor:pointer" title="우선순위"></span>
+          <span class="tnum">${esc(t.task_num||'')}</span>
+          <span class="ttitle" contenteditable="true" onblur="debounceSave('${t.id}',{title:this.textContent.trim()})">${esc(t.title)}</span>
+          <button class="abtn ${aClass}" onclick="cycleAssignee('${t.id}','${t.assignee||'이윤희'}')">${t.assignee||'이윤희'}</button>
+          <button class="sbtn ${sClass}" onclick="cycleStatus('${t.id}','${t.status||'예정'}')">${t.status||'예정'}</button>
+        </div>
+        <div class="tdates">
+          <span class="tdlabel">시작</span>
+          <input type="date" class="tdinput" value="${t.start_date||''}" onchange="saveTask('${t.id}',{start_date:this.value});updateTaskDur(this)">
+          <span class="tdsep">→</span>
+          <span class="tdlabel">완료</span>
+          <input type="date" class="tdinput" value="${t.end_date||''}" onchange="saveTask('${t.id}',{end_date:this.value});updateTaskDur(this)">
+          <span class="tddur" id="tdur-${t.id}">${dur||''}</span>
+        </div>
+      </div></td>
+      ${bars}
+    </tr>
+    <tr>
+      <td class="tnote-td" colspan="13">
+        <div class="tnote" contenteditable="true" onblur="debounceSave('${t.id}',{note:this.textContent.trim()})">${esc(t.note||'')}</div>
+        <div class="subtasks-wrap" id="stw-${t.id}">
+          ${(t.subtasks||[]).map((st,i)=>`
+          <div class="subtask-row" id="str-${t.id}-${i}">
+            <input type="checkbox" ${st.done?'checked':''} onchange="toggleSubtask('${t.id}',${i},this.checked)">
+            <span class="subtask-title ${st.done?'st-done':''}" contenteditable="true" onblur="editSubtask('${t.id}',${i},this.textContent.trim())">${esc(st.title)}</span>
+            <button class="st-del" onclick="deleteSubtask('${t.id}',${i})">×</button>
+          </div>`).join('')}
+          <button class="st-add-btn" onclick="addSubtask('${t.id}')">＋ 세부작업</button>
+        </div>
+      </td>
+    </tr>
+  </tbody>`
 }
 
-function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') }
-function calcDur(s,e) {
+// ─── Sortable 초기화 ───
+function initSortable() {
+  const phasesWrap = document.getElementById('phases-wrap')
+  if(phasesWrap) {
+    Sortable.create(phasesWrap, {
+      handle: '.ph-drag',
+      animation: 180,
+      ghostClass: 'sortable-ghost',
+      chosenClass: 'sortable-chosen',
+      onEnd: async ({ oldIndex, newIndex }) => {
+        if(oldIndex===newIndex) return
+        const [moved] = state.phases.splice(oldIndex,1)
+        state.phases.splice(newIndex,0,moved)
+        await Promise.all(state.phases.map((p,i)=>db.from('tt_phases').update({sort_order:i+1}).eq('id',p.id)))
+        showSaved()
+      }
+    })
+  }
+  state.phases.forEach(p => initTaskSortable(p.id))
+}
+
+function initTaskSortable(phaseId) {
+  const table = document.getElementById('gtable-'+phaseId)
+  if(!table) return
+  Sortable.create(table, {
+    handle: '.task-drag',
+    draggable: 'tbody.task-group',
+    animation: 150,
+    ghostClass: 'sortable-ghost',
+    chosenClass: 'sortable-chosen',
+    onEnd: async ({ oldIndex, newIndex }) => {
+      if(oldIndex===newIndex) return
+      const tasks = state.tasks[phaseId]
+      if(!tasks) return
+      const [moved] = tasks.splice(oldIndex,1)
+      tasks.splice(newIndex,0,moved)
+      await Promise.all(tasks.map((t,i)=>db.from('tt_tasks').update({sort_order:i}).eq('id',t.id)))
+      showSaved()
+    }
+  })
+}
+
+// ─── 유틸 ───
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') }
+function calcDur(s,e){
   if(!s||!e) return ''
   const d=Math.round((new Date(e)-new Date(s))/86400000)
   return d<0?'⚠️':d===0?'당일':Math.round(d/7)+'주'
 }
-function showSaved() {
+function showSaved(){
   const el=document.getElementById('save-indicator')
-  el.classList.add('show')
-  setTimeout(()=>el.classList.remove('show'),1500)
+  el.classList.add('show'); setTimeout(()=>el.classList.remove('show'),1500)
 }
-function findTask(id) { return Object.values(state.tasks).flat().find(t=>t.id===id) }
+function findTask(id){ return Object.values(state.tasks).flat().find(t=>t.id===id) }
 
-function toggleTheme() {
+function toggleTheme(){
   const isLight=document.body.classList.toggle('light')
   localStorage.setItem('theme',isLight?'light':'dark')
   const btn=document.getElementById('theme-btn')
   if(btn) btn.textContent=isLight?'🌙 다크':'☀️ 라이트'
 }
 
-async function saveTask(id,updates) {
+// ─── DB 저장 ───
+async function saveTask(id,updates){
   Object.assign(findTask(id)||{},updates)
   await db.from('tt_tasks').update(updates).eq('id',id)
   showSaved()
 }
-function debounceSave(id,updates) {
-  clearTimeout(saveTimers[id])
-  saveTimers[id]=setTimeout(()=>saveTask(id,updates),600)
+function debounceSave(id,updates){
+  clearTimeout(saveTimers[id]); saveTimers[id]=setTimeout(()=>saveTask(id,updates),600)
 }
-async function savePhase(id,updates) {
+async function savePhase(id,updates){
   const ph=state.phases.find(p=>p.id===id)
   if(ph) Object.assign(ph,updates)
   await db.from('tt_phases').update(updates).eq('id',id)
   showSaved()
 }
-async function savePhaseTitle(id,value) { await savePhase(id,{title:value}) }
-async function saveSetting(key,value) {
+async function savePhaseTitle(id,value){ await savePhase(id,{title:value}) }
+async function saveSetting(key,value){
   state.settings[key]=value
   await db.from('tt_settings').update({[key]:value}).eq('id',1)
   showSaved()
 }
 
-async function cycleAssignee(id,current) {
+// ─── 순환 클릭 ───
+async function cycleAssignee(id,current){
   const next=ASSIGNEES[(ASSIGNEES.indexOf(current)+1)%ASSIGNEES.length]
   await saveTask(id,{assignee:next})
   const btn=document.querySelector(`#trow-${id} .abtn`)
-  if(btn){btn.textContent=next;btn.className='abtn '+(next==='개발자'?'a-dev':next==='공동'?'a-both':'a-me')}
+  if(btn){btn.textContent=next;btn.className='abtn '+(next==='이순구'?'a-dev':next==='공동'?'a-both':'a-me')}
 }
-async function cycleStatus(id,current) {
+
+// ─── 세부작업 ───
+async function addSubtask(taskId){
+  const task=findTask(taskId); if(!task) return
+  const subtasks=[...(task.subtasks||[]),{id:Date.now(),title:'새 세부작업',done:false}]
+  task.subtasks=subtasks
+  await db.from('tt_tasks').update({subtasks}).eq('id',taskId)
+  rerenderSubtasks(taskId)
+  showSaved()
+}
+async function toggleSubtask(taskId,idx,done){
+  const task=findTask(taskId); if(!task) return
+  const subtasks=[...(task.subtasks||[])]
+  subtasks[idx]={...subtasks[idx],done}
+  task.subtasks=subtasks
+  await db.from('tt_tasks').update({subtasks}).eq('id',taskId)
+  const title=document.querySelector(`#str-${taskId}-${idx} .subtask-title`)
+  if(title) title.classList.toggle('st-done',done)
+  showSaved()
+}
+async function editSubtask(taskId,idx,title){
+  const task=findTask(taskId); if(!task) return
+  const subtasks=[...(task.subtasks||[])]
+  if(!subtasks[idx]) return
+  subtasks[idx]={...subtasks[idx],title}
+  task.subtasks=subtasks
+  await db.from('tt_tasks').update({subtasks}).eq('id',taskId)
+  showSaved()
+}
+async function deleteSubtask(taskId,idx){
+  const task=findTask(taskId); if(!task) return
+  const subtasks=[...(task.subtasks||[])]
+  subtasks.splice(idx,1)
+  task.subtasks=subtasks
+  await db.from('tt_tasks').update({subtasks}).eq('id',taskId)
+  rerenderSubtasks(taskId)
+  showSaved()
+}
+function rerenderSubtasks(taskId){
+  const task=findTask(taskId); if(!task) return
+  const wrap=document.getElementById('stw-'+taskId); if(!wrap) return
+  wrap.innerHTML=(task.subtasks||[]).map((st,i)=>`
+    <div class="subtask-row" id="str-${taskId}-${i}">
+      <input type="checkbox" ${st.done?'checked':''} onchange="toggleSubtask('${taskId}',${i},this.checked)">
+      <span class="subtask-title ${st.done?'st-done':''}" contenteditable="true" onblur="editSubtask('${taskId}',${i},this.textContent.trim())">${esc(st.title)}</span>
+      <button class="st-del" onclick="deleteSubtask('${taskId}',${i})">×</button>
+    </div>`).join('')+`<button class="st-add-btn" onclick="addSubtask('${taskId}')">＋ 세부작업</button>`
+}
+async function cycleStatus(id,current){
   const next=STATUSES[(STATUSES.indexOf(current)+1)%STATUSES.length]
   await saveTask(id,{status:next})
   const map={'예정':'s-todo','진행중':'s-doing','완료':'s-done','보류':'s-hold','검토중':'s-review'}
   const btn=document.querySelector(`#trow-${id} .sbtn`)
   if(btn){btn.textContent=next;btn.className='sbtn '+map[next]}
-  const sw=document.getElementById('summary-wrap')
-  if(sw) sw.innerHTML=renderSummary()
+  const sw=document.getElementById('summary-wrap'); if(sw) sw.innerHTML=renderSummary()
 }
-async function cyclePriority(id,current) {
+async function cyclePriority(id,current){
   const prios=['high','mid','low']
   const next=prios[(prios.indexOf(current)+1)%prios.length]
   await saveTask(id,{priority:next})
   const dot=document.querySelector(`#trow-${id} .pdot`)
   if(dot) dot.className='pdot p-'+next
 }
-async function toggleWeekBar(id,idx,current) {
-  const task=findTask(id)
-  if(!task) return
+async function toggleWeekBar(id,idx,current){
+  const task=findTask(id); if(!task) return
   const bars=[...(task.week_bars||Array(12).fill(''))]
   const next=WBAR_STATES[(WBAR_STATES.indexOf(current)+1)%WBAR_STATES.length]
-  bars[idx]=next
-  task.week_bars=bars
+  bars[idx]=next; task.week_bars=bars
   await db.from('tt_tasks').update({week_bars:bars}).eq('id',id)
   const bar=document.querySelector(`#trow-${id} td:nth-child(${idx+2}) .wbar`)
   if(bar) bar.className='wbar '+(next||'w-empty')
   showSaved()
 }
 
-function updateDur() {
-  const s=document.getElementById('proj-start')?.value
-  const e=document.getElementById('proj-end')?.value
-  const el=document.getElementById('proj-dur')
-  if(el) el.textContent=calcDur(s,e)
+// ─── 날짜 표시 ───
+function updateDur(){
+  const s=document.getElementById('proj-start')?.value, e=document.getElementById('proj-end')?.value
+  const el=document.getElementById('proj-dur'); if(el) el.textContent=calcDur(s,e)
 }
-function updatePhaseDur(input) {
-  const meta=input.closest('.ph-meta')
-  const [s,e]=meta.querySelectorAll('.ph-date')
+function updatePhaseDur(input){
+  const meta=input.closest('.ph-meta'), [s,e]=meta.querySelectorAll('.ph-date')
   const phaseId=input.closest('.phase-block').id.replace('ph-','')
   const el=document.getElementById('phdur-'+phaseId)
-  const dur=calcDur(s?.value,e?.value)
-  if(el) el.textContent=dur?'('+dur+')':''
+  if(el) el.textContent=calcDur(s?.value,e?.value)?'('+calcDur(s?.value,e?.value)+')':''
 }
-function updateTaskDur(input) {
-  const row=input.closest('tr')
-  const taskId=row.id.replace('trow-','')
-  const inputs=row.querySelectorAll('.tdinput')
-  const el=document.getElementById('tdur-'+taskId)
+function updateTaskDur(input){
+  const row=input.closest('tr'), taskId=row.id.replace('trow-','')
+  const inputs=row.querySelectorAll('.tdinput'), el=document.getElementById('tdur-'+taskId)
   if(el) el.textContent=calcDur(inputs[0]?.value,inputs[1]?.value)||''
 }
 
-function togglePhase(id) {
-  const body=document.getElementById('phbody-'+id)
-  const tog=document.getElementById('phtog-'+id)
+// ─── 페이즈 접기 ───
+function togglePhase(id){
+  const body=document.getElementById('phbody-'+id), tog=document.getElementById('phtog-'+id)
   if(!body) return
   const open=body.style.display!=='none'
-  body.style.display=open?'none':''
-  tog?.classList.toggle('open',!open)
+  body.style.display=open?'none':''; tog?.classList.toggle('open',!open)
 }
 
-async function addPhase() {
+// ─── 페이즈 추가 ───
+async function addPhase(){
   const newOrder=state.phases.length+1
   const {data,error}=await db.from('tt_phases')
     .insert({title:'새 페이즈',icon:PH_ICONS[(newOrder-1)%PH_ICONS.length],gradient:PH_GRADIENTS[(newOrder-1)%PH_GRADIENTS.length],sort_order:newOrder})
     .select().single()
   if(error||!data){alert('페이즈 추가 실패: '+(error?.message||''));return}
-  state.phases.push(data)
-  state.tasks[data.id]=[]
+  state.phases.push(data); state.tasks[data.id]=[]
   const wrap=document.getElementById('phases-wrap')
-  if(wrap) wrap.insertAdjacentHTML('beforeend',renderPhase(data))
+  if(wrap){ wrap.insertAdjacentHTML('beforeend',renderPhase(data)); initTaskSortable(data.id) }
   showSaved()
 }
 
-async function addTask(phaseId) {
+// ─── 작업 추가 ───
+async function addTask(phaseId){
   const tasks=state.tasks[phaseId]||[]
   const phaseNum=state.phases.find(p=>p.id===phaseId)?.sort_order||''
-  const taskNum=phaseNum+'.'+(tasks.length+1)
   const {data,error}=await db.from('tt_tasks')
-    .insert({phase_id:phaseId,task_num:taskNum,title:'새 작업',sort_order:tasks.length})
+    .insert({phase_id:phaseId,task_num:phaseNum+'.'+(tasks.length+1),title:'새 작업',sort_order:tasks.length})
     .select().single()
   if(error||!data) return
   if(!state.tasks[phaseId]) state.tasks[phaseId]=[]
   state.tasks[phaseId].push(data)
-  const tbody=document.getElementById('tbd-'+phaseId)
-  if(tbody) tbody.insertAdjacentHTML('beforeend',renderTask(data))
-  const sw=document.getElementById('summary-wrap')
-  if(sw) sw.innerHTML=renderSummary()
+  const table=document.getElementById('gtable-'+phaseId)
+  const tfoot=table?.querySelector('tfoot')
+  if(tfoot) tfoot.insertAdjacentHTML('beforebegin',renderTask(data))
+  const sw=document.getElementById('summary-wrap'); if(sw) sw.innerHTML=renderSummary()
   showSaved()
 }
 
-function subscribe() {
+// ─── 실시간 구독 ───
+function subscribe(){
   db.channel('timetable-live')
     .on('postgres_changes',{event:'UPDATE',schema:'public',table:'tt_tasks'},({new:t})=>{
-      const task=findTask(t.id)
-      if(task) Object.assign(task,t)
+      const task=findTask(t.id); if(task) Object.assign(task,t)
       const row=document.getElementById('trow-'+t.id)
       if(row){
         const aBtn=row.querySelector('.abtn'),sBtn=row.querySelector('.sbtn')
@@ -466,16 +554,16 @@ function subscribe() {
       if(!state.tasks[t.phase_id]) state.tasks[t.phase_id]=[]
       if(!state.tasks[t.phase_id].find(x=>x.id===t.id)){
         state.tasks[t.phase_id].push(t)
-        const tbody=document.getElementById('tbd-'+t.phase_id)
-        if(tbody) tbody.insertAdjacentHTML('beforeend',renderTask(t))
+        const table=document.getElementById('gtable-'+t.phase_id)
+        const tfoot=table?.querySelector('tfoot')
+        if(tfoot) tfoot.insertAdjacentHTML('beforebegin',renderTask(t))
       }
     })
     .on('postgres_changes',{event:'INSERT',schema:'public',table:'tt_phases'},({new:p})=>{
       if(!state.phases.find(x=>x.id===p.id)){
-        state.phases.push(p)
-        state.tasks[p.id]=[]
+        state.phases.push(p); state.tasks[p.id]=[]
         const wrap=document.getElementById('phases-wrap')
-        if(wrap) wrap.insertAdjacentHTML('beforeend',renderPhase(p))
+        if(wrap){ wrap.insertAdjacentHTML('beforeend',renderPhase(p)); initTaskSortable(p.id) }
       }
     })
     .subscribe()
