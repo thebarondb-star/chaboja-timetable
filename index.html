@@ -256,9 +256,9 @@ function renderPhase(phase) {
         <input type="date" class="ph-date" value="${phase.end_date||''}" onchange="savePhase('${phase.id}',{end_date:this.value});updatePhaseDur(this)">
         <span class="ph-dur" id="phdur-${phase.id}">${dur?'('+dur+')':''}</span>
       </div>
-      <span class="ph-toggle open" id="phtog-${phase.id}">▶</span>
+      <span class="ph-toggle" id="phtog-${phase.id}">▶</span>
     </div>
-    <div class="gantt-wrap" id="phbody-${phase.id}">
+    <div class="gantt-wrap" id="phbody-${phase.id}" style="display:none">
       <table class="gtable" id="gtable-${phase.id}">
         <thead><tr>${wkHeader}</tr></thead>
         ${tasks.map(t=>renderTask(t)).join('')}
