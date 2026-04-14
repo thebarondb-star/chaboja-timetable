@@ -287,11 +287,11 @@ function renderTask(t) {
       <td><div class="tcell">
         <div class="tmain">
           <span class="task-drag" title="드래그하여 순서 변경">⠿</span>
-          <span class="pdot ${pClass}" onclick="cyclePriority('${t.id}','${t.priority||'mid'}')" style="cursor:pointer" title="우선순위"></span>
+          <span class="pdot ${pClass}" onclick="cyclePriority('${t.id}')" style="cursor:pointer" title="우선순위"></span>
           <span class="tnum">${esc(t.task_num||'')}</span>
           <span class="ttitle" contenteditable="true" onblur="debounceSave('${t.id}',{title:this.textContent.trim()})">${esc(t.title)}</span>
-          <button class="abtn ${aClass}" onclick="cycleAssignee('${t.id}','${t.assignee||'이윤희'}')">${t.assignee||'이윤희'}</button>
-          <button class="sbtn ${sClass}" onclick="cycleStatus('${t.id}','${t.status||'예정'}')">${t.status||'예정'}</button>
+          <button class="abtn ${aClass}" onclick="cycleAssignee('${t.id}')">${t.assignee||'이윤희'}</button>
+          <button class="sbtn ${sClass}" onclick="cycleStatus('${t.id}')">${t.status||'예정'}</button>
         </div>
         <div class="tdates">
           <span class="tdlabel">시작</span>
@@ -406,8 +406,9 @@ async function saveSetting(key,value){
 }
 
 // ─── 순환 클릭 ───
-async function cycleAssignee(id,current){
-  const next=ASSIGNEES[(ASSIGNEES.indexOf(current)+1)%ASSIGNEES.length]
+async function cycleAssignee(id){
+  const task=findTask(id); if(!task) return
+  const next=ASSIGNEES[(ASSIGNEES.indexOf(task.assignee)+1)%ASSIGNEES.length]
   await saveTask(id,{assignee:next})
   const btn=document.querySelector(`#trow-${id} .abtn`)
   if(btn){btn.textContent=next;btn.className='abtn '+(next==='이순구'?'a-dev':next==='공동'?'a-both':'a-me')}
@@ -460,8 +461,9 @@ function rerenderSubtasks(taskId){
       <button class="st-del" onclick="deleteSubtask('${taskId}',${i})">×</button>
     </div>`).join('')+`<button class="st-add-btn" onclick="addSubtask('${taskId}')">＋ 세부작업</button>`
 }
-async function cycleStatus(id,current){
-  const next=STATUSES[(STATUSES.indexOf(current)+1)%STATUSES.length]
+async function cycleStatus(id){
+  const task=findTask(id); if(!task) return
+  const next=STATUSES[(STATUSES.indexOf(task.status)+1)%STATUSES.length]
   await saveTask(id,{status:next})
   const map={'예정':'s-todo','진행중':'s-doing','완료':'s-done','보류':'s-hold','검토중':'s-review'}
   const btn=document.querySelector(`#trow-${id} .sbtn`)
@@ -477,9 +479,10 @@ async function cycleStatus(id,current){
     if(pctEl){pctEl.textContent=pct+'%';pctEl.style.color=pct===100?'#4ade80':pct>=50?'#fbbf24':'#94a3b8'}
   }
 }
-async function cyclePriority(id,current){
+async function cyclePriority(id){
+  const task=findTask(id); if(!task) return
   const prios=['high','mid','low']
-  const next=prios[(prios.indexOf(current)+1)%prios.length]
+  const next=prios[(prios.indexOf(task.priority)+1)%prios.length]
   await saveTask(id,{priority:next})
   const dot=document.querySelector(`#trow-${id} .pdot`)
   if(dot) dot.className='pdot p-'+next
