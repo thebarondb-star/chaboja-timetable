@@ -303,6 +303,9 @@ function renderPhase(phase) {
   return `
   <div class="phase-block" id="ph-${phase.id}">
     <div class="phase-header" style="background:${phase.gradient}" onclick="togglePhase('${phase.id}')">
+      <span class="ph-drag" onclick="event.stopPropagation()" title="드래그하여 순서 변경">⠿</span>
+      <span style="font-size:1.2em">${phase.icon}</span>
+      <input class="ph-title-edit" value="${esc(phase.title)}" onclick="event.stopPropagation()" onblur="savePhaseTitle('${phase.id}',this.value)" onkeydown="if(event.key==='Enter')this.blur()">
       <div class="ph-left" onclick="event.stopPropagation()">
         <span class="ph-pct" style="color:${pctColor}" id="ph-pct-${phase.id}">${pct}%</span>
         <input type="date" class="ph-date" value="${phase.start_date||''}" onchange="savePhase('${phase.id}',{start_date:this.value});updatePhaseDur(this)">
@@ -310,9 +313,6 @@ function renderPhase(phase) {
         <input type="date" class="ph-date" value="${phase.end_date||''}" onchange="savePhase('${phase.id}',{end_date:this.value});updatePhaseDur(this)">
         <span class="ph-dur" id="phdur-${phase.id}">${dur?'('+dur+')':''}</span>
       </div>
-      <span class="ph-drag" onclick="event.stopPropagation()" title="드래그하여 순서 변경">⠿</span>
-      <span style="font-size:1.2em">${phase.icon}</span>
-      <input class="ph-title-edit" value="${esc(phase.title)}" onclick="event.stopPropagation()" onblur="savePhaseTitle('${phase.id}',this.value)" onkeydown="if(event.key==='Enter')this.blur()">
       <span class="ph-toggle" id="phtog-${phase.id}">▶</span>
     </div>
     <div class="gantt-wrap" id="phbody-${phase.id}" style="display:none">
