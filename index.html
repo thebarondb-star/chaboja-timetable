@@ -35,7 +35,7 @@ body { font-family:'Malgun Gothic','Apple SD Gothic Neo',sans-serif; background:
 
 .container { padding:20px 36px 60px; max-width:100%; margin:0 auto; }
 
-.summary { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-bottom:20px; }
+.summary { display:grid; grid-template-columns:repeat(5,1fr); gap:10px; margin-bottom:20px; }
 .sum-card { background:var(--bg2); border-radius:10px; padding:12px 16px; border:1px solid var(--border); }
 .sum-card .n { font-size:1.6em; font-weight:800; margin-bottom:2px; }
 .sum-card .l { font-size:0.72em; color:var(--text3); }
@@ -60,7 +60,7 @@ body { font-family:'Malgun Gothic','Apple SD Gothic Neo',sans-serif; background:
 .ph-date { background:rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.3); color:white; padding:2px 4px; border-radius:4px; font-size:0.75em; font-family:inherit; width:100px; }
 .ph-date:focus { outline:none; background:rgba(255,255,255,0.25); }
 .ph-dur { font-size:0.72em; opacity:0.6; white-space:nowrap; }
-.ph-title-edit { font-weight:700; font-size:0.95em; flex:1; outline:none; background:transparent; border:none; border-bottom:1px dashed transparent; color:white; font-family:inherit; cursor:text; min-width:80px; }
+.ph-title-edit { font-weight:700; font-size:0.95em; outline:none; background:transparent; border:none; border-bottom:1px dashed transparent; color:white; font-family:inherit; cursor:text; min-width:80px; }
 .ph-title-edit:focus { border-bottom-color:rgba(255,255,255,0.5); }
 .ph-toggle { font-size:0.8em; opacity:0.7; transition:transform 0.2s; flex-shrink:0; }
 .ph-toggle.open { transform:rotate(90deg); }
@@ -279,12 +279,16 @@ function render() {
 
 function renderSummary() {
   let total=0,done=0,doing=0,todo=0
-  Object.values(state.tasks).flat().forEach(t=>{ total++; if(t.status==='완료')done++; else if(t.status==='진행중')doing++; else todo++ })
+  const allTasks=Object.values(state.tasks).flat()
+  allTasks.forEach(t=>{ total++; if(t.status==='완료')done++; else if(t.status==='진행중')doing++; else todo++ })
+  const overallPct=allTasks.length>0?Math.round(allTasks.reduce((s,t)=>s+calcTaskProgress(t),0)/allTasks.length*100):0
+  const pctColor=overallPct===100?'#4ade80':overallPct>=50?'#fbbf24':'#60a5fa'
   return `<div class="summary">
     <div class="sum-card c-blue"><div class="n">${total}</div><div class="l">전체 작업</div></div>
     <div class="sum-card c-green"><div class="n">${done}</div><div class="l">완료</div></div>
     <div class="sum-card c-yellow"><div class="n">${doing}</div><div class="l">진행중</div></div>
     <div class="sum-card c-purple"><div class="n">${todo}</div><div class="l">예정</div></div>
+    <div class="sum-card"><div class="n" style="color:${pctColor}">${overallPct}%</div><div class="l">전체 진행율</div></div>
   </div>`
 }
 
@@ -307,12 +311,13 @@ function renderPhase(phase) {
       <span style="font-size:1.2em">${phase.icon}</span>
       <input class="ph-title-edit" value="${esc(phase.title)}" onclick="event.stopPropagation()" onblur="savePhaseTitle('${phase.id}',this.value)" onkeydown="if(event.key==='Enter')this.blur()">
       <div class="ph-left" onclick="event.stopPropagation()">
-        <span class="ph-pct" style="color:${pctColor}" id="ph-pct-${phase.id}">${pct}%</span>
         <input type="date" class="ph-date" value="${phase.start_date||''}" onchange="savePhase('${phase.id}',{start_date:this.value});updatePhaseDur(this)">
         <span style="opacity:.6">–</span>
         <input type="date" class="ph-date" value="${phase.end_date||''}" onchange="savePhase('${phase.id}',{end_date:this.value});updatePhaseDur(this)">
         <span class="ph-dur" id="phdur-${phase.id}">${dur?'('+dur+')':''}</span>
+        <span class="ph-pct" style="color:${pctColor}" id="ph-pct-${phase.id}">${pct}%</span>
       </div>
+      <div style="flex:1"></div>
       <span class="ph-toggle" id="phtog-${phase.id}">▶</span>
     </div>
     <div class="gantt-wrap" id="phbody-${phase.id}" style="display:none">
