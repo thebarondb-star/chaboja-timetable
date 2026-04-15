@@ -6,16 +6,15 @@
 <title>CHABOJA ERP 타임테이블</title>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
-
 :root {
-  --bg:   #0f172a; --bg2: #1e293b; --bg3: #0f172a; --bg4: #182030; --bg5: #243044;
-  --text: #e2e8f0; --text2: #94a3b8; --text3: #64748b; --text4: #475569;
-  --border: #334155; --input-bg: #0f172a; --note-ph: #2a3a4e;
+  --bg:#0f172a; --bg2:#1e293b; --bg3:#0f172a; --bg4:#182030; --bg5:#243044;
+  --text:#e2e8f0; --text2:#94a3b8; --text3:#64748b; --text4:#475569;
+  --border:#334155; --input-bg:#0f172a; --note-ph:#2a3a4e;
 }
 body.light {
-  --bg: #f1f5f9; --bg2: #ffffff; --bg3: #f8fafc; --bg4: #e2e8f0; --bg5: #dde4ef;
-  --text: #1e293b; --text2: #475569; --text3: #64748b; --text4: #94a3b8;
-  --border: #e2e8f0; --input-bg: #f1f5f9; --note-ph: #cbd5e1;
+  --bg:#f1f5f9; --bg2:#ffffff; --bg3:#f8fafc; --bg4:#e2e8f0; --bg5:#dde4ef;
+  --text:#1e293b; --text2:#475569; --text3:#64748b; --text4:#94a3b8;
+  --border:#e2e8f0; --input-bg:#f1f5f9; --note-ph:#cbd5e1;
 }
 body { font-family:'Malgun Gothic','Apple SD Gothic Neo',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; transition:background .25s,color .25s; }
 
@@ -34,7 +33,7 @@ body { font-family:'Malgun Gothic','Apple SD Gothic Neo',sans-serif; background:
 .ldot { width:9px; height:9px; border-radius:2px; }
 .tip { margin-left:auto; font-size:0.72em; color:var(--text4); }
 
-.container { padding:20px 36px 60px; max-width:1440px; margin:0 auto; }
+.container { padding:20px 36px 60px; max-width:100%; margin:0 auto; }
 
 .summary { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-bottom:20px; }
 .sum-card { background:var(--bg2); border-radius:10px; padding:12px 16px; border:1px solid var(--border); }
@@ -45,31 +44,31 @@ body { font-family:'Malgun Gothic','Apple SD Gothic Neo',sans-serif; background:
 /* ─── 페이즈 ─── */
 .phase-block { margin-bottom:20px; border-radius:12px; overflow:hidden; box-shadow:0 4px 20px rgba(0,0,0,0.3); }
 .phase-block.sortable-ghost { opacity:0.4; }
-.phase-block.sortable-chosen { box-shadow:0 0 0 2px #3b82f6, 0 4px 20px rgba(0,0,0,0.4); }
-.phase-header { padding:12px 18px; display:flex; align-items:center; gap:10px; cursor:pointer; user-select:none; }
+.phase-block.sortable-chosen { box-shadow:0 0 0 2px #3b82f6,0 4px 20px rgba(0,0,0,0.4); }
+.phase-header { padding:10px 14px; display:flex; align-items:center; gap:8px; cursor:pointer; user-select:none; flex-wrap:wrap; }
 .phase-header:hover { filter:brightness(1.08); }
 
-/* 드래그 핸들 */
-.ph-drag { cursor:grab; opacity:0.5; font-size:1.1em; padding:2px 4px; border-radius:4px; flex-shrink:0; line-height:1; }
+.ph-drag { cursor:grab; opacity:0.5; font-size:1.1em; padding:2px 4px; border-radius:4px; flex-shrink:0; }
 .ph-drag:hover { opacity:1; background:rgba(255,255,255,0.15); }
 .ph-drag:active { cursor:grabbing; }
-.task-drag { cursor:grab; opacity:0.3; font-size:1em; padding:1px 3px; flex-shrink:0; line-height:1; color:var(--text3); }
+.task-drag { cursor:grab; opacity:0.3; font-size:1em; padding:1px 3px; flex-shrink:0; color:var(--text3); }
 .task-drag:hover { opacity:0.8; }
 .task-drag:active { cursor:grabbing; }
 
-.ph-title-edit { font-weight:700; font-size:0.95em; flex:1; outline:none; background:transparent; border:none; border-bottom:1px dashed transparent; color:white; font-family:inherit; cursor:text; }
-.ph-title-edit:focus { border-bottom-color:rgba(255,255,255,0.5); }
-.ph-meta { display:flex; align-items:center; gap:5px; }
-.ph-date { background:rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.3); color:white; padding:2px 5px; border-radius:4px; font-size:0.78em; font-family:inherit; width:112px; }
+.ph-left { display:flex; align-items:center; gap:6px; flex-shrink:0; }
+.ph-pct { font-size:0.78em; font-weight:700; background:rgba(0,0,0,0.25); padding:2px 8px; border-radius:10px; white-space:nowrap; }
+.ph-date { background:rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.3); color:white; padding:2px 4px; border-radius:4px; font-size:0.75em; font-family:inherit; width:100px; }
 .ph-date:focus { outline:none; background:rgba(255,255,255,0.25); }
-.ph-dur { font-size:0.75em; opacity:0.65; }
-.ph-toggle { font-size:0.8em; opacity:0.7; transition:transform 0.2s; }
+.ph-dur { font-size:0.72em; opacity:0.6; white-space:nowrap; }
+.ph-title-edit { font-weight:700; font-size:0.95em; flex:1; outline:none; background:transparent; border:none; border-bottom:1px dashed transparent; color:white; font-family:inherit; cursor:text; min-width:80px; }
+.ph-title-edit:focus { border-bottom-color:rgba(255,255,255,0.5); }
+.ph-toggle { font-size:0.8em; opacity:0.7; transition:transform 0.2s; flex-shrink:0; }
 .ph-toggle.open { transform:rotate(90deg); }
 
 /* ─── 테이블 ─── */
 .gantt-wrap { background:var(--bg2); overflow-x:auto; }
-.gtable { width:100%; border-collapse:collapse; min-width:960px; }
-.gtable thead th { background:var(--bg3); color:var(--text3); font-size:0.68em; font-weight:600; padding:7px 5px; border-bottom:1px solid var(--border); white-space:nowrap; text-align:left; }
+.gtable { border-collapse:collapse; }
+.gtable thead th { background:var(--bg3); color:var(--text3); font-size:0.65em; font-weight:600; padding:6px 4px; border-bottom:1px solid var(--border); white-space:nowrap; text-align:left; }
 .gtable th.wth { text-align:center; width:34px; min-width:34px; }
 .gtable tbody.task-group { border-bottom:1px solid var(--bg4); }
 .gtable tbody.task-group:last-of-type { border-bottom:none; }
@@ -79,7 +78,7 @@ body { font-family:'Malgun Gothic','Apple SD Gothic Neo',sans-serif; background:
 .gtable tfoot td { padding:0; }
 
 /* ─── 작업 셀 ─── */
-.tcell { padding:8px 10px; background:var(--bg2); min-width:340px; max-width:340px; width:340px; display:flex; flex-direction:column; gap:4px; }
+.tcell { padding:8px 10px; background:var(--bg2); min-width:320px; max-width:320px; width:320px; display:flex; flex-direction:column; gap:4px; }
 .tmain { display:flex; align-items:center; gap:5px; }
 .tnum { color:var(--text4); font-size:0.68em; min-width:18px; flex-shrink:0; }
 .ttitle { font-size:0.83em; flex:1; outline:none; border-bottom:1px dashed transparent; line-height:1.4; cursor:text; color:var(--text); }
@@ -92,10 +91,12 @@ body { font-family:'Malgun Gothic','Apple SD Gothic Neo',sans-serif; background:
 .s-doing{background:#92400e;color:#fcd34d} .s-done{background:#14532d;color:#86efac}
 .s-hold{background:#3b1f6b;color:#c4b5fd} .s-review{background:#1e3a8a;color:#93c5fd}
 select.sbtn { appearance:none; -webkit-appearance:none; cursor:pointer; }
+.task-del-btn { background:none; border:none; color:var(--text4); cursor:pointer; font-size:1em; padding:0 3px; opacity:0.3; line-height:1; flex-shrink:0; }
+.task-del-btn:hover { opacity:1; color:#ef4444; }
 
 .tdates { display:flex; align-items:center; gap:4px; padding-left:26px; }
 .tdlabel { font-size:0.62em; color:var(--text4); }
-.tdinput { background:var(--input-bg); border:1px solid var(--border); color:var(--text2); padding:1px 4px; border-radius:4px; font-size:0.65em; font-family:inherit; width:104px; cursor:pointer; }
+.tdinput { background:var(--input-bg); border:1px solid var(--border); color:var(--text2); padding:1px 4px; border-radius:4px; font-size:0.65em; font-family:inherit; width:100px; cursor:pointer; }
 .tdinput:focus { outline:none; border-color:#3b82f6; color:var(--text); }
 .tdsep { color:var(--text4); font-size:0.65em; }
 .tddur { font-size:0.62em; color:var(--text4); }
@@ -113,12 +114,12 @@ select.sbtn { appearance:none; -webkit-appearance:none; cursor:pointer; }
 .w-hold   { background:linear-gradient(90deg,#3b1f6b,#4c1d95); }
 .w-review { background:linear-gradient(90deg,#1e3a8a,#1e40af); }
 
+/* ─── 메모 / 세부작업 ─── */
 .tnote-td { padding:0 !important; }
-.tnote { font-size:0.68em; color:var(--text3); padding:2px 10px 6px 38px; background:var(--bg2); outline:none; border-bottom:1px dashed transparent; display:block; width:100%; }
+.tnote { font-size:0.68em; color:var(--text3); padding:2px 10px 4px 38px; background:var(--bg2); outline:none; border-bottom:1px dashed transparent; display:block; width:100%; }
 .tnote:focus { border-bottom-color:#3b82f6; color:var(--text2); }
 .tnote:empty:before { content:'메모...'; color:var(--note-ph); }
-
-.subtasks-wrap { padding:4px 10px 6px 38px; background:var(--bg2); }
+.subtasks-wrap { padding:2px 10px 6px 38px; background:var(--bg2); }
 .subtask-row { display:flex; align-items:center; gap:6px; padding:2px 0; }
 .subtask-row input[type=checkbox] { cursor:pointer; flex-shrink:0; }
 .subtask-title { font-size:0.72em; color:var(--text2); flex:1; outline:none; border-bottom:1px dashed transparent; cursor:text; }
@@ -128,8 +129,6 @@ select.sbtn { appearance:none; -webkit-appearance:none; cursor:pointer; }
 .st-del:hover { opacity:1; color:#ef4444; }
 .st-add-btn { background:none; border:none; color:var(--text4); cursor:pointer; font-size:0.7em; padding:3px 0; opacity:0.5; font-family:inherit; }
 .st-add-btn:hover { opacity:1; color:var(--text2); }
-.task-del-btn { background:none; border:none; color:var(--text4); cursor:pointer; font-size:1em; padding:0 3px; opacity:0.3; line-height:1; flex-shrink:0; }
-.task-del-btn:hover { opacity:1; color:#ef4444; }
 
 .add-btn { background:none; border:1px dashed var(--border); color:var(--text4); padding:7px; width:100%; cursor:pointer; font-size:0.75em; transition:all 0.2s; font-family:inherit; }
 .add-btn:hover { background:var(--bg5); color:var(--text2); }
@@ -156,13 +155,14 @@ const db = createClient(SUPABASE_URL, SUPABASE_KEY)
 
 let state = { settings:{}, phases:[], tasks:{} }
 let saveTimers = {}
+let WEEK_DATES = []
 
-const ASSIGNEES   = ['이윤희','이순구','공동']
-const STATUSES    = ['예정','진행중','완료','보류','검토중']
-const WBAR_STATES = ['w-empty','w-todo','w-doing','w-done','w-hold','w-review']
-const STATUS_BAR  = {'예정':'w-todo','진행중':'w-doing','완료':'w-done','보류':'w-hold','검토중':'w-review'}
-const WEEKS       = ['W1|4/14','W2|4/21','W3|4/28','W4|5/5','W5|5/12','W6|5/19','W7|5/26','W8|6/2','W9|6/9','W10|6/16','W11|6/23','W12|6/30']
-const WEEK_DATES  = ['2026-04-14','2026-04-21','2026-04-28','2026-05-05','2026-05-12','2026-05-19','2026-05-26','2026-06-02','2026-06-09','2026-06-16','2026-06-23','2026-06-30']
+const ASSIGNEES    = ['이윤희','이순구','공동']
+const STATUSES     = ['예정','진행중','완료','보류','검토중']
+const WBAR_STATES  = ['w-empty','w-todo','w-doing','w-done','w-hold','w-review']
+const STATUS_BAR   = {'예정':'w-todo','진행중':'w-doing','완료':'w-done','보류':'w-hold','검토중':'w-review'}
+const ORIG_WEEKS   = ['2026-04-14','2026-04-21','2026-04-28','2026-05-05','2026-05-12','2026-05-19','2026-05-26','2026-06-02','2026-06-09','2026-06-16','2026-06-23','2026-06-30']
+
 const PH_GRADIENTS = [
   'linear-gradient(135deg,#1a3a2a,#059669)','linear-gradient(135deg,#1a2a3a,#0284c7)',
   'linear-gradient(135deg,#1e3a5f,#1d4ed8)','linear-gradient(135deg,#7c2d12,#ea580c)',
@@ -174,6 +174,47 @@ const PH_ICONS = ['📋','🗃️','💬','🚀','💰','🧮','📊','✅','�
 
 ;(function(){ if(localStorage.getItem('theme')==='light') document.body.classList.add('light') })()
 
+// ─── 주간 계산 ───
+function getMonday(date) {
+  const d = new Date(date)
+  const day = d.getDay()
+  d.setDate(d.getDate() - day + (day===0 ? -6 : 1))
+  d.setHours(0,0,0,0)
+  return d
+}
+function dateStr(d) { return d.toISOString().split('T')[0] }
+
+function computeWeekRange() {
+  let minD = null, maxD = null
+  if (state.settings.start_date) { const d=new Date(state.settings.start_date); if(!minD||d<minD) minD=d }
+  if (state.settings.end_date)   { const d=new Date(state.settings.end_date);   if(!maxD||d>maxD) maxD=d }
+  Object.values(state.tasks).flat().forEach(t => {
+    if (t.start_date) { const d=new Date(t.start_date); if(!minD||d<minD) minD=d }
+    if (t.end_date)   { const d=new Date(t.end_date);   if(!maxD||d>maxD) maxD=d }
+  })
+  if (!minD) minD = new Date('2026-04-14')
+  if (!maxD) { maxD = new Date(minD); maxD.setDate(maxD.getDate()+77) }
+
+  const start = getMonday(minD)
+  const end   = getMonday(maxD)
+  const weeks = []
+  const cur = new Date(start)
+  while (cur <= end) { weeks.push(dateStr(cur)); cur.setDate(cur.getDate()+7) }
+  return weeks
+}
+
+// ─── week_bars 마이그레이션 (array → object) ───
+function migrateWeekBars(task) {
+  if (Array.isArray(task.week_bars)) {
+    const obj = {}
+    ORIG_WEEKS.forEach((wd,i) => { if(task.week_bars[i]) obj[wd]=task.week_bars[i] })
+    task.week_bars = obj
+  } else if (!task.week_bars) {
+    task.week_bars = {}
+  }
+}
+
+// ─── 초기화 ───
 async function init() {
   try {
     const [{ data:s },{ data:ph },{ data:tk }] = await Promise.all([
@@ -181,20 +222,23 @@ async function init() {
       db.from('tt_phases').select('*').order('sort_order'),
       db.from('tt_tasks').select('*').order('sort_order')
     ])
-    state.settings = s || { name:'CHABOJA ERP 타임테이블', start_date:'', end_date:'' }
+    state.settings = s || { name:'CHABOJA ERP 타임테이블', start_date:'2026-04-14', end_date:'2026-06-30' }
     state.phases = ph || []
     state.tasks = {}
     ;(tk||[]).forEach(t => {
+      migrateWeekBars(t)
       if(!state.tasks[t.phase_id]) state.tasks[t.phase_id]=[]
       state.tasks[t.phase_id].push(t)
     })
+    WEEK_DATES = computeWeekRange()
     render()
     subscribe()
   } catch(e) {
-    document.getElementById('app').innerHTML = '<div class="loading">❌ 연결 실패.<br><small>'+e.message+'</small></div>'
+    document.getElementById('app').innerHTML='<div class="loading">❌ 연결 실패.<br><small>'+e.message+'</small></div>'
   }
 }
 
+// ─── 렌더 ───
 function render() {
   const s = state.settings
   const isLight = document.body.classList.contains('light')
@@ -204,9 +248,9 @@ function render() {
         <h1>🚗 <span id="proj-name" contenteditable="true" style="outline:none;border-bottom:2px dashed rgba(255,255,255,0.3);padding-bottom:1px">${esc(s.name)}</span></h1>
         <div class="header-sub">
           <span style="opacity:.6">전체 시작</span>
-          <input type="date" class="hdr-input" id="proj-start" value="${s.start_date||''}" onchange="saveSetting('start_date',this.value);updateDur()">
+          <input type="date" class="hdr-input" id="proj-start" value="${s.start_date||''}" onchange="saveSetting('start_date',this.value);updateDur();refreshWeeks()">
           <span style="opacity:.6">완료예정</span>
-          <input type="date" class="hdr-input" id="proj-end" value="${s.end_date||''}" onchange="saveSetting('end_date',this.value);updateDur()">
+          <input type="date" class="hdr-input" id="proj-end" value="${s.end_date||''}" onchange="saveSetting('end_date',this.value);updateDur();refreshWeeks()">
           <span id="proj-dur" style="opacity:.6">${calcDur(s.start_date,s.end_date)}</span>
         </div>
       </div>
@@ -221,17 +265,15 @@ function render() {
       ${[['#334155','예정'],['#92400e','진행중'],['#14532d','완료'],['#3b1f6b','보류'],['#1e3a8a','검토중']].map(([c,t])=>`<div class="legend"><span class="ldot" style="background:${c}"></span>${t}</div>`).join('')}
       <span style="margin-left:6px">우선순위:</span>
       ${[['#ef4444','높음'],['#f59e0b','중간'],['#22c55e','낮음']].map(([c,t])=>`<div class="legend"><span class="ldot" style="background:${c};border-radius:50%"></span>${t}</div>`).join('')}
-      <span class="tip">⠿ 핸들 드래그로 순서 변경 | 작업명·메모 클릭=수정 | 담당자·상태=클릭 순환</span>
+      <span class="tip">⠿ 드래그로 순서 변경 | 날짜 입력 시 주간바 자동 표시</span>
     </div>
     <div class="container">
       <div id="summary-wrap">${renderSummary()}</div>
       <div id="phases-wrap">${state.phases.map(p=>renderPhase(p)).join('')}</div>
       <button class="add-phase-btn" onclick="addPhase()">＋ 페이즈 추가</button>
     </div>`
-
-  const nameEl = document.getElementById('proj-name')
+  const nameEl=document.getElementById('proj-name')
   if(nameEl){ let t; nameEl.addEventListener('input',()=>{ clearTimeout(t); t=setTimeout(()=>saveSetting('name',nameEl.textContent.trim()),700) }) }
-
   initSortable()
 }
 
@@ -249,45 +291,50 @@ function renderSummary() {
 function renderPhase(phase) {
   const tasks = state.tasks[phase.id]||[]
   const dur = calcDur(phase.start_date,phase.end_date)
-  const total = tasks.length
-  const done = tasks.filter(t=>t.status==='완료').length
-  const pct = total > 0 ? Math.round(done/total*100) : 0
-  const pctColor = pct===100 ? '#4ade80' : pct>=50 ? '#fbbf24' : '#94a3b8'
-  const wkHeader = '<th style="min-width:340px;width:340px">작업</th>' +
-    WEEKS.map(w=>{ const[n,d]=w.split('|'); return `<th class="wth"><span style="font-size:.65em;display:block">${n}</span><span style="font-size:.58em;display:block;opacity:.5">${d}</span></th>` }).join('')
+  const total=tasks.length, done=tasks.filter(t=>t.status==='완료').length
+  const pct=total>0?Math.round(done/total*100):0
+  const pctColor=pct===100?'#4ade80':pct>=50?'#fbbf24':'#94a3b8'
+
+  const wkHeader='<th style="min-width:320px;width:320px">작업</th>'+
+    WEEK_DATES.map((wd,i)=>{
+      const d=new Date(wd), mo=d.getMonth()+1, da=d.getDate()
+      return `<th class="wth"><span style="font-size:.65em;display:block">W${i+1}</span><span style="font-size:.58em;display:block;opacity:.5">${mo}/${da}</span></th>`
+    }).join('')
+
   return `
   <div class="phase-block" id="ph-${phase.id}">
     <div class="phase-header" style="background:${phase.gradient}" onclick="togglePhase('${phase.id}')">
-      <span class="ph-drag" onclick="event.stopPropagation()" title="드래그하여 페이즈 순서 변경">⠿</span>
-      <span style="font-size:1.2em">${phase.icon}</span>
-      <input class="ph-title-edit" value="${esc(phase.title)}" onclick="event.stopPropagation()" onblur="savePhaseTitle('${phase.id}',this.value)" onkeydown="if(event.key==='Enter')this.blur()">
-      <span style="font-size:0.78em;font-weight:700;color:${pctColor};background:rgba(0,0,0,0.2);padding:2px 8px;border-radius:10px;white-space:nowrap" id="ph-pct-${phase.id}">${pct}%</span>
-      <div class="ph-meta" onclick="event.stopPropagation()">
+      <div class="ph-left" onclick="event.stopPropagation()">
+        <span class="ph-pct" style="color:${pctColor}" id="ph-pct-${phase.id}">${pct}%</span>
         <input type="date" class="ph-date" value="${phase.start_date||''}" onchange="savePhase('${phase.id}',{start_date:this.value});updatePhaseDur(this)">
         <span style="opacity:.6">–</span>
         <input type="date" class="ph-date" value="${phase.end_date||''}" onchange="savePhase('${phase.id}',{end_date:this.value});updatePhaseDur(this)">
         <span class="ph-dur" id="phdur-${phase.id}">${dur?'('+dur+')':''}</span>
       </div>
+      <span class="ph-drag" onclick="event.stopPropagation()" title="드래그하여 순서 변경">⠿</span>
+      <span style="font-size:1.2em">${phase.icon}</span>
+      <input class="ph-title-edit" value="${esc(phase.title)}" onclick="event.stopPropagation()" onblur="savePhaseTitle('${phase.id}',this.value)" onkeydown="if(event.key==='Enter')this.blur()">
       <span class="ph-toggle" id="phtog-${phase.id}">▶</span>
     </div>
     <div class="gantt-wrap" id="phbody-${phase.id}" style="display:none">
       <table class="gtable" id="gtable-${phase.id}">
         <thead><tr>${wkHeader}</tr></thead>
         ${tasks.map(t=>renderTask(t)).join('')}
-        <tfoot><tr><td colspan="13"><button class="add-btn" onclick="addTask('${phase.id}')">+ 작업 추가</button></td></tr></tfoot>
+        <tfoot><tr><td colspan="${WEEK_DATES.length+1}"><button class="add-btn" onclick="addTask('${phase.id}')">+ 작업 추가</button></td></tr></tfoot>
       </table>
     </div>
   </div>`
 }
 
 function renderTask(t) {
-  const bars = (t.week_bars||Array(12).fill('')).map((b,i)=>
-    `<td><div class="wcell"><div class="wbar ${b||'w-empty'}" onclick="toggleWeekBar('${t.id}',${i})"></div></div></td>`
-  ).join('')
-  const dur = calcDur(t.start_date,t.end_date)
-  const aClass = t.assignee==='이순구'?'a-dev':t.assignee==='공동'?'a-both':'a-me'
-  const sClass = {'예정':'s-todo','진행중':'s-doing','완료':'s-done','보류':'s-hold','검토중':'s-review'}[t.status]||'s-todo'
-  const pClass = t.priority==='high'?'p-high':t.priority==='low'?'p-low':'p-mid'
+  const bars=WEEK_DATES.map((wd,i)=>{
+    const b=(t.week_bars&&t.week_bars[wd])||''
+    return `<td><div class="wcell"><div class="wbar ${b||'w-empty'}" onclick="toggleWeekBar('${t.id}','${wd}')"></div></div></td>`
+  }).join('')
+  const dur=calcDur(t.start_date,t.end_date)
+  const aClass=t.assignee==='이순구'?'a-dev':t.assignee==='공동'?'a-both':'a-me'
+  const sClass=({'예정':'s-todo','진행중':'s-doing','완료':'s-done','보류':'s-hold','검토중':'s-review'}[t.status])||'s-todo'
+  const pClass=t.priority==='high'?'p-high':t.priority==='low'?'p-low':'p-mid'
   return `
   <tbody class="task-group" id="tg-${t.id}">
     <tr id="trow-${t.id}">
@@ -315,7 +362,7 @@ function renderTask(t) {
       ${bars}
     </tr>
     <tr>
-      <td class="tnote-td" colspan="13">
+      <td class="tnote-td" colspan="${WEEK_DATES.length+1}">
         <div class="tnote" contenteditable="true" onblur="debounceSave('${t.id}',{note:this.textContent.trim()})">${esc(t.note||'')}</div>
         <div class="subtasks-wrap" id="stw-${t.id}">
           ${(t.subtasks||[]).map((st,i)=>`
@@ -331,46 +378,48 @@ function renderTask(t) {
   </tbody>`
 }
 
-// ─── Sortable 초기화 ───
+// ─── Sortable ───
 function initSortable() {
-  const phasesWrap = document.getElementById('phases-wrap')
-  if(phasesWrap) {
-    Sortable.create(phasesWrap, {
-      handle: '.ph-drag',
-      animation: 180,
-      ghostClass: 'sortable-ghost',
-      chosenClass: 'sortable-chosen',
-      onEnd: async ({ oldIndex, newIndex }) => {
-        if(oldIndex===newIndex) return
-        const [moved] = state.phases.splice(oldIndex,1)
-        state.phases.splice(newIndex,0,moved)
-        await Promise.all(state.phases.map((p,i)=>db.from('tt_phases').update({sort_order:i+1}).eq('id',p.id)))
-        showSaved()
-      }
-    })
-  }
-  state.phases.forEach(p => initTaskSortable(p.id))
+  initPhaseSortable()
+  state.phases.forEach(p=>initTaskSortable(p.id))
 }
-
-function initTaskSortable(phaseId) {
-  const table = document.getElementById('gtable-'+phaseId)
-  if(!table) return
-  Sortable.create(table, {
-    handle: '.task-drag',
-    draggable: 'tbody.task-group',
-    animation: 150,
-    ghostClass: 'sortable-ghost',
-    chosenClass: 'sortable-chosen',
-    onEnd: async ({ oldIndex, newIndex }) => {
+function initPhaseSortable() {
+  const wrap=document.getElementById('phases-wrap')
+  if(!wrap) return
+  Sortable.create(wrap,{
+    handle:'.ph-drag', animation:180, ghostClass:'sortable-ghost', chosenClass:'sortable-chosen',
+    onEnd:async({oldIndex,newIndex})=>{
       if(oldIndex===newIndex) return
-      const tasks = state.tasks[phaseId]
-      if(!tasks) return
-      const [moved] = tasks.splice(oldIndex,1)
-      tasks.splice(newIndex,0,moved)
+      const [moved]=state.phases.splice(oldIndex,1); state.phases.splice(newIndex,0,moved)
+      await Promise.all(state.phases.map((p,i)=>db.from('tt_phases').update({sort_order:i+1}).eq('id',p.id)))
+      showSaved()
+    }
+  })
+}
+function initTaskSortable(phaseId) {
+  const table=document.getElementById('gtable-'+phaseId)
+  if(!table) return
+  Sortable.create(table,{
+    handle:'.task-drag', draggable:'tbody.task-group', animation:150,
+    ghostClass:'sortable-ghost', chosenClass:'sortable-chosen',
+    onEnd:async({oldIndex,newIndex})=>{
+      if(oldIndex===newIndex) return
+      const tasks=state.tasks[phaseId]; if(!tasks) return
+      const [moved]=tasks.splice(oldIndex,1); tasks.splice(newIndex,0,moved)
       await Promise.all(tasks.map((t,i)=>db.from('tt_tasks').update({sort_order:i}).eq('id',t.id)))
       showSaved()
     }
   })
+}
+
+// ─── 전체 재렌더 (주간 범위 변경 시) ───
+function rerenderAllPhases() {
+  WEEK_DATES = computeWeekRange()
+  const wrap=document.getElementById('phases-wrap')
+  if(!wrap) return
+  wrap.innerHTML=state.phases.map(p=>renderPhase(p)).join('')
+  initPhaseSortable()
+  state.phases.forEach(p=>initTaskSortable(p.id))
 }
 
 // ─── 유틸 ───
@@ -385,7 +434,6 @@ function showSaved(){
   el.classList.add('show'); setTimeout(()=>el.classList.remove('show'),1500)
 }
 function findTask(id){ return Object.values(state.tasks).flat().find(t=>t.id===id) }
-
 function toggleTheme(){
   const isLight=document.body.classList.toggle('light')
   localStorage.setItem('theme',isLight?'light':'dark')
@@ -403,19 +451,73 @@ function debounceSave(id,updates){
   clearTimeout(saveTimers[id]); saveTimers[id]=setTimeout(()=>saveTask(id,updates),600)
 }
 async function savePhase(id,updates){
-  const ph=state.phases.find(p=>p.id===id)
-  if(ph) Object.assign(ph,updates)
-  await db.from('tt_phases').update(updates).eq('id',id)
-  showSaved()
+  const ph=state.phases.find(p=>p.id===id); if(ph) Object.assign(ph,updates)
+  await db.from('tt_phases').update(updates).eq('id',id); showSaved()
 }
 async function savePhaseTitle(id,value){ await savePhase(id,{title:value}) }
 async function saveSetting(key,value){
   state.settings[key]=value
-  await db.from('tt_settings').update({[key]:value}).eq('id',1)
+  await db.from('tt_settings').update({[key]:value}).eq('id',1); showSaved()
+}
+
+// ─── 날짜/주간 업데이트 ───
+function updateDur(){
+  const s=document.getElementById('proj-start')?.value, e=document.getElementById('proj-end')?.value
+  const el=document.getElementById('proj-dur'); if(el) el.textContent=calcDur(s,e)
+}
+function updatePhaseDur(input){
+  const meta=input.closest('.ph-left'), dates=meta.querySelectorAll('.ph-date')
+  const phaseId=input.closest('.phase-block').id.replace('ph-','')
+  const el=document.getElementById('phdur-'+phaseId)
+  const dur=calcDur(dates[0]?.value,dates[1]?.value)
+  if(el) el.textContent=dur?'('+dur+')':''
+}
+function updateTaskDur(input){
+  const row=input.closest('tr'), taskId=row.id.replace('trow-','')
+  const inputs=row.querySelectorAll('.tdinput'), el=document.getElementById('tdur-'+taskId)
+  if(el) el.textContent=calcDur(inputs[0]?.value,inputs[1]?.value)||''
+  autoFillWeekBars(taskId)
+}
+
+// ─── 주간바 자동채색 ───
+async function autoFillWeekBars(taskId){
+  const task=findTask(taskId)
+  if(!task||(!task.start_date&&!task.end_date)) return
+  const start=task.start_date?new Date(task.start_date):new Date(task.end_date)
+  const end=task.end_date?new Date(task.end_date):new Date(task.start_date)
+  const bar=STATUS_BAR[task.status||'예정']||'w-todo'
+
+  const newWeeks=computeWeekRange()
+  const weeksChanged=JSON.stringify(newWeeks)!==JSON.stringify(WEEK_DATES)
+  WEEK_DATES=newWeeks
+
+  const bars={...(task.week_bars||{})}
+  WEEK_DATES.forEach(wd=>{
+    const wStart=new Date(wd), wEnd=new Date(wStart.getTime()+6*86400000)
+    bars[wd]=(wStart<=end&&wEnd>=start)?bar:''
+  })
+  task.week_bars=bars
+  await db.from('tt_tasks').update({week_bars:bars}).eq('id',taskId)
+
+  if(weeksChanged){
+    rerenderAllPhases()
+  } else {
+    const row=document.getElementById('trow-'+taskId)
+    if(row) WEEK_DATES.forEach((wd,i)=>{
+      const b=bars[wd]||''
+      const el=row.querySelector(`td:nth-child(${i+2}) .wbar`)
+      if(el) el.className='wbar '+(b||'w-empty')
+    })
+  }
   showSaved()
 }
 
-// ─── 순환 클릭 ───
+function refreshWeeks(){
+  const newWeeks=computeWeekRange()
+  if(JSON.stringify(newWeeks)!==JSON.stringify(WEEK_DATES)) rerenderAllPhases()
+}
+
+// ─── 순환/변경 ───
 async function cycleAssignee(id){
   const task=findTask(id); if(!task) return
   const next=ASSIGNEES[(ASSIGNEES.indexOf(task.assignee)+1)%ASSIGNEES.length]
@@ -423,70 +525,14 @@ async function cycleAssignee(id){
   const btn=document.querySelector(`#trow-${id} .abtn`)
   if(btn){btn.textContent=next;btn.className='abtn '+(next==='이순구'?'a-dev':next==='공동'?'a-both':'a-me')}
 }
-
-// ─── 세부작업 ───
-async function addSubtask(taskId){
-  const task=findTask(taskId); if(!task) return
-  const subtasks=[...(task.subtasks||[]),{id:Date.now(),title:'새 세부작업',done:false}]
-  task.subtasks=subtasks
-  await db.from('tt_tasks').update({subtasks}).eq('id',taskId)
-  rerenderSubtasks(taskId)
-  showSaved()
-}
-async function toggleSubtask(taskId,idx,done){
-  const task=findTask(taskId); if(!task) return
-  const subtasks=[...(task.subtasks||[])]
-  subtasks[idx]={...subtasks[idx],done}
-  task.subtasks=subtasks
-  await db.from('tt_tasks').update({subtasks}).eq('id',taskId)
-  const title=document.querySelector(`#str-${taskId}-${idx} .subtask-title`)
-  if(title) title.classList.toggle('st-done',done)
-  showSaved()
-}
-async function editSubtask(taskId,idx,title){
-  const task=findTask(taskId); if(!task) return
-  const subtasks=[...(task.subtasks||[])]
-  if(!subtasks[idx]) return
-  subtasks[idx]={...subtasks[idx],title}
-  task.subtasks=subtasks
-  await db.from('tt_tasks').update({subtasks}).eq('id',taskId)
-  showSaved()
-}
-async function deleteSubtask(taskId,idx){
-  const task=findTask(taskId); if(!task) return
-  const subtasks=[...(task.subtasks||[])]
-  subtasks.splice(idx,1)
-  task.subtasks=subtasks
-  await db.from('tt_tasks').update({subtasks}).eq('id',taskId)
-  rerenderSubtasks(taskId)
-  showSaved()
-}
-function rerenderSubtasks(taskId){
-  const task=findTask(taskId); if(!task) return
-  const wrap=document.getElementById('stw-'+taskId); if(!wrap) return
-  wrap.innerHTML=(task.subtasks||[]).map((st,i)=>`
-    <div class="subtask-row" id="str-${taskId}-${i}">
-      <input type="checkbox" ${st.done?'checked':''} onchange="toggleSubtask('${taskId}',${i},this.checked)">
-      <span class="subtask-title ${st.done?'st-done':''}" contenteditable="true" onblur="editSubtask('${taskId}',${i},this.textContent.trim())">${esc(st.title)}</span>
-      <button class="st-del" onclick="deleteSubtask('${taskId}',${i})">×</button>
-    </div>`).join('')+`<button class="st-add-btn" onclick="addSubtask('${taskId}')">＋ 세부작업</button>`
-}
 async function changeStatus(id,value){
   await saveTask(id,{status:value})
   const map={'예정':'s-todo','진행중':'s-doing','완료':'s-done','보류':'s-hold','검토중':'s-review'}
   const sel=document.querySelector(`#trow-${id} .sbtn`)
   if(sel) sel.className='sbtn '+(map[value]||'s-todo')
   const sw=document.getElementById('summary-wrap'); if(sw) sw.innerHTML=renderSummary()
+  updatePhasePct(id)
   autoFillWeekBars(id)
-  // 퍼센트 업데이트
-  const phaseId=Object.keys(state.tasks).find(pid=>state.tasks[pid].some(t=>t.id===id))
-  if(phaseId){
-    const tasks=state.tasks[phaseId]
-    const total=tasks.length, done=tasks.filter(t=>t.status==='완료').length
-    const pct=total>0?Math.round(done/total*100):0
-    const pctEl=document.getElementById('ph-pct-'+phaseId)
-    if(pctEl){pctEl.textContent=pct+'%';pctEl.style.color=pct===100?'#4ade80':pct>=50?'#fbbf24':'#94a3b8'}
-  }
 }
 async function cyclePriority(id){
   const task=findTask(id); if(!task) return
@@ -496,56 +542,30 @@ async function cyclePriority(id){
   const dot=document.querySelector(`#trow-${id} .pdot`)
   if(dot) dot.className='pdot p-'+next
 }
-async function toggleWeekBar(id,idx){
+async function toggleWeekBar(id,weekDate){
   const task=findTask(id); if(!task) return
-  const bars=[...(task.week_bars||Array(12).fill(''))]
-  const current=bars[idx]||''
+  const bars={...(task.week_bars||{})}
+  const current=bars[weekDate]||''
   const next=WBAR_STATES[(WBAR_STATES.indexOf(current)+1)%WBAR_STATES.length]
-  bars[idx]=next; task.week_bars=bars
+  bars[weekDate]=next; task.week_bars=bars
   await db.from('tt_tasks').update({week_bars:bars}).eq('id',id)
+  const idx=WEEK_DATES.indexOf(weekDate)
   const bar=document.querySelector(`#trow-${id} td:nth-child(${idx+2}) .wbar`)
   if(bar) bar.className='wbar '+(next||'w-empty')
   showSaved()
 }
 
-// ─── 날짜 표시 ───
-function updateDur(){
-  const s=document.getElementById('proj-start')?.value, e=document.getElementById('proj-end')?.value
-  const el=document.getElementById('proj-dur'); if(el) el.textContent=calcDur(s,e)
-}
-function updatePhaseDur(input){
-  const meta=input.closest('.ph-meta'), [s,e]=meta.querySelectorAll('.ph-date')
-  const phaseId=input.closest('.phase-block').id.replace('ph-','')
-  const el=document.getElementById('phdur-'+phaseId)
-  if(el) el.textContent=calcDur(s?.value,e?.value)?'('+calcDur(s?.value,e?.value)+')':''
-}
-function updateTaskDur(input){
-  const row=input.closest('tr'), taskId=row.id.replace('trow-','')
-  const inputs=row.querySelectorAll('.tdinput'), el=document.getElementById('tdur-'+taskId)
-  if(el) el.textContent=calcDur(inputs[0]?.value,inputs[1]?.value)||''
-  autoFillWeekBars(taskId)
-}
-async function autoFillWeekBars(taskId){
-  const task=findTask(taskId)
-  if(!task||(!task.start_date&&!task.end_date)) return
-  const start=task.start_date ? new Date(task.start_date) : new Date(task.end_date)
-  const end=task.end_date ? new Date(task.end_date) : new Date(task.start_date)
-  const bar=STATUS_BAR[task.status||'예정']||'w-todo'
-  const bars=WEEK_DATES.map(wd=>{
-    const wStart=new Date(wd), wEnd=new Date(wStart.getTime()+6*86400000)
-    return (wStart<=end && wEnd>=start) ? bar : 'w-empty'
-  })
-  task.week_bars=bars
-  await db.from('tt_tasks').update({week_bars:bars}).eq('id',taskId)
-  const row=document.getElementById('trow-'+taskId)
-  if(row) bars.forEach((b,i)=>{
-    const el=row.querySelector(`td:nth-child(${i+2}) .wbar`)
-    if(el) el.className='wbar '+(b||'w-empty')
-  })
-  showSaved()
+function updatePhasePct(taskId){
+  const phaseId=Object.keys(state.tasks).find(pid=>state.tasks[pid].some(t=>t.id===taskId))
+  if(!phaseId) return
+  const tasks=state.tasks[phaseId]
+  const total=tasks.length, done=tasks.filter(t=>t.status==='완료').length
+  const pct=total>0?Math.round(done/total*100):0
+  const el=document.getElementById('ph-pct-'+phaseId)
+  if(el){el.textContent=pct+'%';el.style.color=pct===100?'#4ade80':pct>=50?'#fbbf24':'#94a3b8'}
 }
 
-// ─── 페이즈 접기 ───
+// ─── 페이즈 토글 ───
 function togglePhase(id){
   const body=document.getElementById('phbody-'+id), tog=document.getElementById('phtog-'+id)
   if(!body) return
@@ -562,11 +582,27 @@ async function addPhase(){
   if(error||!data){alert('페이즈 추가 실패: '+(error?.message||''));return}
   state.phases.push(data); state.tasks[data.id]=[]
   const wrap=document.getElementById('phases-wrap')
-  if(wrap){ wrap.insertAdjacentHTML('beforeend',renderPhase(data)); initTaskSortable(data.id) }
+  if(wrap){wrap.insertAdjacentHTML('beforeend',renderPhase(data));initTaskSortable(data.id)}
   showSaved()
 }
 
-// ─── 작업 추가 ───
+// ─── 작업 추가/삭제 ───
+async function addTask(phaseId){
+  const tasks=state.tasks[phaseId]||[]
+  const phaseNum=state.phases.find(p=>p.id===phaseId)?.sort_order||''
+  const {data,error}=await db.from('tt_tasks')
+    .insert({phase_id:phaseId,task_num:phaseNum+'.'+(tasks.length+1),title:'새 작업',sort_order:tasks.length})
+    .select().single()
+  if(error||!data) return
+  migrateWeekBars(data)
+  if(!state.tasks[phaseId]) state.tasks[phaseId]=[]
+  state.tasks[phaseId].push(data)
+  const table=document.getElementById('gtable-'+phaseId)
+  const tfoot=table?.querySelector('tfoot')
+  if(tfoot) tfoot.insertAdjacentHTML('beforebegin',renderTask(data))
+  const sw=document.getElementById('summary-wrap'); if(sw) sw.innerHTML=renderSummary()
+  showSaved()
+}
 async function deleteTask(id){
   if(!confirm('이 작업을 삭제하시겠습니까?')) return
   await db.from('tt_tasks').delete().eq('id',id)
@@ -576,37 +612,60 @@ async function deleteTask(id){
   const sw=document.getElementById('summary-wrap'); if(sw) sw.innerHTML=renderSummary()
   showSaved()
 }
-async function addTask(phaseId){
-  const tasks=state.tasks[phaseId]||[]
-  const phaseNum=state.phases.find(p=>p.id===phaseId)?.sort_order||''
-  const {data,error}=await db.from('tt_tasks')
-    .insert({phase_id:phaseId,task_num:phaseNum+'.'+(tasks.length+1),title:'새 작업',sort_order:tasks.length})
-    .select().single()
-  if(error||!data) return
-  if(!state.tasks[phaseId]) state.tasks[phaseId]=[]
-  state.tasks[phaseId].push(data)
-  const table=document.getElementById('gtable-'+phaseId)
-  const tfoot=table?.querySelector('tfoot')
-  if(tfoot) tfoot.insertAdjacentHTML('beforebegin',renderTask(data))
-  const sw=document.getElementById('summary-wrap'); if(sw) sw.innerHTML=renderSummary()
-  showSaved()
+
+// ─── 세부작업 ───
+async function addSubtask(taskId){
+  const task=findTask(taskId); if(!task) return
+  const subtasks=[...(task.subtasks||[]),{id:Date.now(),title:'새 세부작업',done:false}]
+  task.subtasks=subtasks
+  await db.from('tt_tasks').update({subtasks}).eq('id',taskId)
+  rerenderSubtasks(taskId); showSaved()
+}
+async function toggleSubtask(taskId,idx,done){
+  const task=findTask(taskId); if(!task) return
+  const subtasks=[...(task.subtasks||[])]; subtasks[idx]={...subtasks[idx],done}; task.subtasks=subtasks
+  await db.from('tt_tasks').update({subtasks}).eq('id',taskId)
+  const title=document.querySelector(`#str-${taskId}-${idx} .subtask-title`)
+  if(title) title.classList.toggle('st-done',done); showSaved()
+}
+async function editSubtask(taskId,idx,title){
+  const task=findTask(taskId); if(!task||!task.subtasks?.[idx]) return
+  const subtasks=[...(task.subtasks||[])]; subtasks[idx]={...subtasks[idx],title}; task.subtasks=subtasks
+  await db.from('tt_tasks').update({subtasks}).eq('id',taskId); showSaved()
+}
+async function deleteSubtask(taskId,idx){
+  const task=findTask(taskId); if(!task) return
+  const subtasks=[...(task.subtasks||[])]; subtasks.splice(idx,1); task.subtasks=subtasks
+  await db.from('tt_tasks').update({subtasks}).eq('id',taskId)
+  rerenderSubtasks(taskId); showSaved()
+}
+function rerenderSubtasks(taskId){
+  const task=findTask(taskId); if(!task) return
+  const wrap=document.getElementById('stw-'+taskId); if(!wrap) return
+  wrap.innerHTML=(task.subtasks||[]).map((st,i)=>`
+    <div class="subtask-row" id="str-${taskId}-${i}">
+      <input type="checkbox" ${st.done?'checked':''} onchange="toggleSubtask('${taskId}',${i},this.checked)">
+      <span class="subtask-title ${st.done?'st-done':''}" contenteditable="true" onblur="editSubtask('${taskId}',${i},this.textContent.trim())">${esc(st.title)}</span>
+      <button class="st-del" onclick="deleteSubtask('${taskId}',${i})">×</button>
+    </div>`).join('')+`<button class="st-add-btn" onclick="addSubtask('${taskId}')">＋ 세부작업</button>`
 }
 
 // ─── 실시간 구독 ───
 function subscribe(){
   db.channel('timetable-live')
     .on('postgres_changes',{event:'UPDATE',schema:'public',table:'tt_tasks'},({new:t})=>{
-      const task=findTask(t.id); if(task) Object.assign(task,t)
+      const task=findTask(t.id); if(task){ migrateWeekBars(t); Object.assign(task,t) }
       const row=document.getElementById('trow-'+t.id)
       if(row){
         const aBtn=row.querySelector('.abtn'),sBtn=row.querySelector('.sbtn')
-        const aMap={'개발자':'a-dev','공동':'a-both','나':'a-me'}
+        const aMap={'이순구':'a-dev','공동':'a-both','이윤희':'a-me'}
         const sMap={'예정':'s-todo','진행중':'s-doing','완료':'s-done','보류':'s-hold','검토중':'s-review'}
         if(aBtn){aBtn.textContent=t.assignee;aBtn.className='abtn '+(aMap[t.assignee]||'a-me')}
-        if(sBtn){sBtn.textContent=t.status;sBtn.className='sbtn '+(sMap[t.status]||'s-todo')}
+        if(sBtn) sBtn.className='sbtn '+(sMap[t.status]||'s-todo')
       }
     })
     .on('postgres_changes',{event:'INSERT',schema:'public',table:'tt_tasks'},({new:t})=>{
+      migrateWeekBars(t)
       if(!state.tasks[t.phase_id]) state.tasks[t.phase_id]=[]
       if(!state.tasks[t.phase_id].find(x=>x.id===t.id)){
         state.tasks[t.phase_id].push(t)
@@ -619,7 +678,7 @@ function subscribe(){
       if(!state.phases.find(x=>x.id===p.id)){
         state.phases.push(p); state.tasks[p.id]=[]
         const wrap=document.getElementById('phases-wrap')
-        if(wrap){ wrap.insertAdjacentHTML('beforeend',renderPhase(p)); initTaskSortable(p.id) }
+        if(wrap){wrap.insertAdjacentHTML('beforeend',renderPhase(p));initTaskSortable(p.id)}
       }
     })
     .subscribe()
