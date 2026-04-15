@@ -291,8 +291,7 @@ function renderSummary() {
 function renderPhase(phase) {
   const tasks = state.tasks[phase.id]||[]
   const dur = calcDur(phase.start_date,phase.end_date)
-  const total=tasks.length, done=tasks.filter(t=>t.status==='완료').length
-  const pct=total>0?Math.round(done/total*100):0
+  const pct=tasks.length>0?Math.round(tasks.reduce((s,t)=>s+calcTaskProgress(t),0)/tasks.length*100):0
   const pctColor=pct===100?'#4ade80':pct>=50?'#fbbf24':'#94a3b8'
 
   const wkHeader='<th style="min-width:320px;width:320px">작업</th>'+
@@ -555,11 +554,21 @@ async function toggleWeekBar(id,weekDate){
   showSaved()
 }
 
+function calcTaskProgress(task){
+  if(task.status==='완료') return 1.0
+  if(task.status==='예정'||task.status==='보류') return 0.0
+  if(task.start_date&&task.end_date){
+    const today=new Date(), start=new Date(task.start_date), end=new Date(task.end_date)
+    const total=end-start
+    if(total<=0) return 1.0
+    return Math.min(Math.max((today-start)/total,0),1)
+  }
+  return task.status==='진행중'||task.status==='검토중' ? 0.5 : 0.0
+}
 function refreshAllPhasePcts(){
   state.phases.forEach(phase=>{
     const tasks=state.tasks[phase.id]||[]
-    const total=tasks.length, done=tasks.filter(t=>t.status==='완료').length
-    const pct=total>0?Math.round(done/total*100):0
+    const pct=tasks.length>0?Math.round(tasks.reduce((s,t)=>s+calcTaskProgress(t),0)/tasks.length*100):0
     const el=document.getElementById('ph-pct-'+phase.id)
     if(el){el.textContent=pct+'%';el.style.color=pct===100?'#4ade80':pct>=50?'#fbbf24':'#94a3b8'}
   })
