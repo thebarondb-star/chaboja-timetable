@@ -48,9 +48,11 @@ body { font-family:'Malgun Gothic','Apple SD Gothic Neo',sans-serif; background:
 .phase-header { padding:10px 14px; display:flex; align-items:center; gap:8px; cursor:pointer; user-select:none; flex-wrap:wrap; }
 .phase-header:hover { filter:brightness(1.08); }
 
-.ph-drag { cursor:grab; opacity:0.5; font-size:1.1em; padding:2px 4px; border-radius:4px; flex-shrink:0; }
+.ph-drag { cursor:grab; opacity:0.5; font-size:1.1em; padding:2px 6px; border-radius:4px; flex-shrink:0; margin-right:2px; }
 .ph-drag:hover { opacity:1; background:rgba(255,255,255,0.15); }
 .ph-drag:active { cursor:grabbing; }
+.ph-del-btn { background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.2); color:rgba(255,255,255,0.7); border-radius:5px; width:22px; height:22px; cursor:pointer; font-size:0.9em; line-height:1; flex-shrink:0; display:flex; align-items:center; justify-content:center; padding:0; }
+.ph-del-btn:hover { background:rgba(239,68,68,0.6); border-color:rgba(239,68,68,0.8); color:white; }
 .task-drag { cursor:grab; opacity:0.3; font-size:1em; padding:1px 3px; flex-shrink:0; color:var(--text3); }
 .task-drag:hover { opacity:0.8; }
 .task-drag:active { cursor:grabbing; }
@@ -59,9 +61,12 @@ body { font-family:'Malgun Gothic','Apple SD Gothic Neo',sans-serif; background:
 .ph-pct { font-size:0.78em; font-weight:700; background:rgba(0,0,0,0.25); padding:2px 8px; border-radius:10px; white-space:nowrap; }
 .ph-date { background:rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.3); color:white; padding:2px 4px; border-radius:4px; font-size:0.75em; font-family:inherit; width:100px; }
 .ph-date:focus { outline:none; background:rgba(255,255,255,0.25); }
-.ph-dur { font-size:0.72em; opacity:0.6; white-space:nowrap; }
-.ph-title-edit { font-weight:700; font-size:0.95em; outline:none; background:transparent; border:none; border-bottom:1px dashed transparent; color:white; font-family:inherit; cursor:text; min-width:80px; }
-.ph-title-edit:focus { border-bottom-color:rgba(255,255,255,0.5); }
+.ph-dur { font-size:0.72em; opacity:0.6; white-space:nowrap; display:inline-block; }
+.ph-title-wrap { flex:none; display:flex; align-items:center; gap:4px; }
+.ph-title-text { font-weight:700; font-size:0.95em; color:white; outline:none; border-radius:4px; padding:1px 3px; cursor:default; white-space:nowrap; }
+.ph-title-text[contenteditable="true"] { background:rgba(0,0,0,0.2); border-bottom:1px dashed rgba(255,255,255,0.5); cursor:text; }
+.ph-edit-btn { background:none; border:none; color:rgba(255,255,255,0.45); cursor:pointer; font-size:0.78em; padding:2px 5px; border-radius:4px; flex-shrink:0; line-height:1; }
+.ph-edit-btn:hover { color:white; background:rgba(255,255,255,0.15); }
 .ph-toggle { font-size:0.8em; opacity:0.7; transition:transform 0.2s; flex-shrink:0; }
 .ph-toggle.open { transform:rotate(90deg); }
 
@@ -78,12 +83,13 @@ body { font-family:'Malgun Gothic','Apple SD Gothic Neo',sans-serif; background:
 .gtable tfoot td { padding:0; }
 
 /* ─── 작업 셀 ─── */
-.tcell { padding:8px 10px; background:var(--bg2); min-width:320px; max-width:320px; width:320px; display:flex; flex-direction:column; gap:4px; }
+.tcell { padding:8px 10px; background:var(--bg2); min-width:220px; display:flex; flex-direction:column; gap:4px; }
 .tmain { display:flex; align-items:center; gap:5px; }
 .tnum { color:var(--text4); font-size:0.68em; min-width:18px; flex-shrink:0; }
-.ttitle { font-size:0.83em; flex:1; outline:none; border-bottom:1px dashed transparent; line-height:1.4; cursor:text; color:var(--text); }
+.ttitle { font-size:0.83em; outline:none; border-bottom:1px dashed transparent; line-height:1.4; cursor:text; color:var(--text); white-space:nowrap; }
 .ttitle:focus { border-bottom-color:#3b82f6; }
 .ttitle:empty:before { content:'작업명 입력...'; color:var(--text4); }
+.task-done-badge { font-size:0.63em; padding:1px 6px; border-radius:8px; background:#14532d; color:#86efac; flex-shrink:0; }
 
 .abtn,.sbtn { font-size:0.68em; padding:2px 7px; border-radius:10px; border:none; outline:none; font-family:inherit; cursor:pointer; white-space:nowrap; flex-shrink:0; }
 .a-me{background:#1d4ed8;color:#bfdbfe} .a-dev{background:#7c3aed;color:#ede9fe} .a-both{background:#065f46;color:#a7f3d0}
@@ -120,11 +126,13 @@ select.sbtn { appearance:none; -webkit-appearance:none; cursor:pointer; }
 .tnote:focus { border-bottom-color:#3b82f6; color:var(--text2); }
 .tnote:empty:before { content:'메모...'; color:var(--note-ph); }
 .subtasks-wrap { padding:2px 10px 6px 38px; background:var(--bg2); }
-.subtask-row { display:flex; align-items:center; gap:6px; padding:2px 0; }
+.subtask-row { display:flex; align-items:center; gap:6px; padding:3px 0; }
 .subtask-row input[type=checkbox] { cursor:pointer; flex-shrink:0; }
 .subtask-title { font-size:0.72em; color:var(--text2); flex:1; outline:none; border-bottom:1px dashed transparent; cursor:text; }
 .subtask-title:focus { border-bottom-color:#3b82f6; }
-.subtask-title.st-done { text-decoration:line-through; color:var(--text4); }
+.st-done-badge { font-size:0.63em; padding:1px 6px; border-radius:8px; background:#14532d; color:#86efac; flex-shrink:0; white-space:nowrap; }
+.st-status-sel { font-size:0.63em; padding:1px 4px; border-radius:8px; border:1px solid var(--border); background:var(--bg3); color:var(--text2); font-family:inherit; cursor:pointer; flex-shrink:0; }
+.st-status-sel:focus { outline:none; border-color:#3b82f6; }
 .st-del { background:none; border:none; color:var(--text4); cursor:pointer; font-size:0.85em; padding:0 2px; opacity:0.4; }
 .st-del:hover { opacity:1; color:#ef4444; }
 .st-add-btn { background:none; border:none; color:var(--text4); cursor:pointer; font-size:0.7em; padding:3px 0; opacity:0.5; font-family:inherit; }
@@ -135,9 +143,139 @@ select.sbtn { appearance:none; -webkit-appearance:none; cursor:pointer; }
 .add-phase-btn { display:block; width:100%; padding:14px; background:none; border:2px dashed var(--border); border-radius:12px; color:var(--text3); font-size:0.85em; font-family:inherit; cursor:pointer; transition:all 0.2s; margin-top:8px; }
 .add-phase-btn:hover { background:var(--bg2); color:var(--text2); border-color:var(--text3); }
 
+/* ─── 모바일 간트 (데스크탑 숨김) ─── */
+.mobile-gantt-wrap { display:none; overflow-x:auto; scrollbar-width:none; background:var(--bg2); }
+.mobile-gantt-wrap::-webkit-scrollbar { display:none; }
+.mob-gantt-inner { display:flex; gap:3px; padding:6px 10px; }
+.mob-wk { display:flex; flex-direction:column; align-items:center; gap:2px; flex-shrink:0; }
+.mob-wbar { width:28px; height:16px; border-radius:3px; cursor:pointer; transition:opacity .15s; }
+.mob-wbar:hover { opacity:.75; }
+.mob-wbar.w-empty { background:transparent; border:1px dashed var(--border); }
+.mob-wbar.w-todo  { background:#334155; }
+.mob-wbar.w-doing { background:linear-gradient(90deg,#92400e,#b45309); }
+.mob-wbar.w-done  { background:linear-gradient(90deg,#14532d,#166534); }
+.mob-wbar.w-hold  { background:linear-gradient(90deg,#3b1f6b,#4c1d95); }
+.mob-wbar.w-review{ background:linear-gradient(90deg,#1e3a8a,#1e40af); }
+.mob-wlabel { font-size:0.48em; color:var(--text4); white-space:nowrap; }
+
+/* ─── 필터 패널 ─── */
+.filter-panel { background:var(--bg2); border:1px solid var(--border); border-radius:10px; margin-bottom:18px; overflow:hidden; }
+.filter-panel-hdr { padding:9px 16px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border); font-size:0.82em; font-weight:600; }
+.filter-close { background:none; border:none; color:var(--text3); cursor:pointer; font-size:1.1em; padding:0 4px; line-height:1; }
+.filter-close:hover { color:var(--text); }
+.filter-item { display:flex; align-items:center; gap:8px; padding:7px 16px; border-bottom:1px solid var(--bg4); flex-wrap:wrap; }
+.filter-item:last-child { border-bottom:none; }
+.filter-item:hover { background:var(--bg5); }
+.fi-phase { font-size:0.65em; padding:2px 7px; border-radius:8px; white-space:nowrap; flex-shrink:0; display:inline-block; text-align:center; }
+.fi-num { font-size:0.68em; color:var(--text4); flex-shrink:0; display:inline-block; text-align:right; }
+.fi-title { font-size:0.82em; flex:1; min-width:120px; }
+.fi-date { font-size:0.65em; color:var(--text3); white-space:nowrap; margin-left:auto; }
+.filter-empty { padding:24px; text-align:center; color:var(--text3); font-size:0.82em; }
+.sum-card { cursor:pointer; transition:box-shadow 0.15s,transform 0.1s; }
+.sum-card:hover { box-shadow:0 0 0 2px var(--border); transform:translateY(-1px); }
+.sum-card.active { box-shadow:0 0 0 2px #3b82f6; }
+
 .loading { text-align:center; padding:60px; color:var(--text3); font-size:0.9em; }
 .save-indicator { position:fixed; bottom:20px; right:20px; background:#14532d; color:#86efac; padding:8px 16px; border-radius:8px; font-size:0.8em; opacity:0; transition:opacity 0.3s; pointer-events:none; z-index:9999; }
 .save-indicator.show { opacity:1; }
+
+/* ─── 페이즈 진행 요약바 ─── */
+.phase-sumbar { background:var(--bg3); border-bottom:1px solid var(--border); padding:7px 36px; display:flex; align-items:stretch; overflow-x:auto; scrollbar-width:none; }
+.phase-sumbar::-webkit-scrollbar { display:none; }
+.psb-item { display:flex; flex-direction:column; gap:4px; padding:3px 14px; border-right:1px solid var(--border); flex-shrink:0; min-width:72px; }
+.psb-item:last-child { border-right:none; border-left:1px solid var(--border); margin-left:auto; }
+.psb-top { display:flex; align-items:center; gap:6px; white-space:nowrap; }
+.psb-name { font-size:0.68em; color:var(--text2); }
+.psb-pct { font-size:0.7em; font-weight:700; }
+.psb-bar { height:3px; background:var(--border); border-radius:2px; overflow:hidden; }
+.psb-fill { height:100%; border-radius:2px; transition:width 0.4s; }
+
+/* ─── 반응형: 태블릿 ─── */
+@media (max-width:1024px) {
+  .header, .statusbar, .phase-sumbar, .container { padding-left:20px; padding-right:20px; }
+}
+
+/* ─── 반응형: 모바일 ─── */
+@media (max-width:768px) {
+  .header { padding:12px 14px; flex-direction:column; align-items:flex-start; gap:8px; }
+  .header h1 { font-size:1.1em; }
+  .header-sub { font-size:0.75em; gap:5px; flex-wrap:wrap; }
+  .hdr-input { width:104px; font-size:0.8em; }
+  .hdr-btns { flex-wrap:wrap; gap:6px; }
+  .badge { font-size:0.72em; padding:3px 9px; }
+  .hdr-btn { font-size:0.75em; padding:4px 9px; }
+  .statusbar { padding:6px 14px; gap:8px; font-size:0.72em; }
+  .tip { display:none; }
+  .phase-sumbar { padding:5px 14px; }
+  .psb-item { min-width:56px; padding:3px 8px; }
+  .psb-name { font-size:0.62em; }
+  .psb-pct { font-size:0.64em; }
+  .container { padding:12px 8px 50px; }
+  .summary { grid-template-columns:repeat(3,1fr); gap:8px; }
+  .sum-card { padding:10px 12px; }
+  .sum-card .n { font-size:1.3em; }
+  .phase-header { padding:9px 12px; flex-wrap:wrap; gap:5px; }
+  .ph-title-edit { font-size:0.88em; min-width:60px; }
+  .ph-left { flex-wrap:wrap; gap:4px; }
+  .ph-date { width:90px; font-size:0.71em; }
+  .ph-dur, .ph-pct { font-size:0.7em; }
+  /* 간트 테이블: 작업열만 전체폭, 주차열 숨김 */
+  .gtable { width:100%; }
+  .gtable th:first-child { min-width:0!important; width:100%!important; }
+  .gtable th.wth { display:none; }
+  .task-main-row td:nth-child(n+2) { display:none; }
+  .tcell { min-width:0!important; max-width:100%!important; width:100%!important; box-sizing:border-box; }
+
+  /* 1행: 제목(말줄임) + 담당자 + 상태 */
+  .tmain { flex-wrap:nowrap; gap:5px; }
+  .ttitle { font-size:0.84em; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .tnum { font-size:0.65em; flex-shrink:0; }
+  .abtn { font-size:0.68em; padding:2px 7px; flex-shrink:0; }
+  .sbtn { font-size:0.66em; padding:2px 5px; flex-shrink:0; max-width:60px; }
+  .task-del-btn { flex-shrink:0; }
+
+  /* 2행: 날짜 전체폭 */
+  .tdates { padding-left:0; flex-wrap:nowrap; gap:5px; width:100%; }
+  .tdlabel { font-size:0.65em; }
+  .tdinput { flex:1; min-width:0; font-size:0.65em; }
+  .tddur { font-size:0.63em; flex-shrink:0; }
+
+  /* 3행: 모바일 간트 표시 */
+  .mobile-gantt-wrap { display:block; }
+
+  /* 메모 */
+  .tnote { padding-left:10px; font-size:0.68em; }
+
+  /* 4행: 세부작업 2열 그리드 */
+  .subtasks-wrap { display:grid; grid-template-columns:1fr 1fr; gap:1px; padding:2px 10px 6px; }
+  .subtask-row { overflow:hidden; gap:4px; }
+  .subtask-title { font-size:0.7em; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .st-add-btn { grid-column:1/-1; font-size:0.68em; padding:4px 0; }
+}
+
+/* ─── 반응형: 소형 모바일 ─── */
+@media (max-width:480px) {
+  .header h1 { font-size:0.95em; }
+  .header-sub { font-size:0.7em; }
+  .hdr-input { width:95px; }
+  .statusbar { gap:5px; font-size:0.68em; }
+  .phase-sumbar { padding:4px 10px; }
+  .psb-item { min-width:46px; padding:2px 6px; }
+  .container { padding:10px 6px 50px; }
+  .summary { grid-template-columns:repeat(3,1fr); gap:6px; }
+  .sum-card { padding:8px 10px; }
+  .sum-card .n { font-size:1.15em; }
+  .phase-header { padding:8px 10px; }
+  .ph-left { display:none; }
+  .sbtn { max-width:54px; font-size:0.62em; }
+  .mob-wbar { width:24px; height:14px; }
+}
+
+@media print {
+  .add-btn,.add-phase-btn,.hdr-btn,.task-del-btn,.ph-drag,.task-drag,.save-indicator,.tip { display:none; }
+  .gantt-wrap { overflow:visible; }
+  body { background:white; color:#1a1a2e; }
+}
 </style>
 </head>
 <body>
@@ -267,6 +405,7 @@ function render() {
       ${[['#ef4444','높음'],['#f59e0b','중간'],['#22c55e','낮음']].map(([c,t])=>`<div class="legend"><span class="ldot" style="background:${c};border-radius:50%"></span>${t}</div>`).join('')}
       <span class="tip">⠿ 드래그로 순서 변경 | 날짜 입력 시 주간바 자동 표시</span>
     </div>
+    ${renderPhaseSummaryBar()}
     <div class="container">
       <div id="summary-wrap">${renderSummary()}</div>
       <div id="phases-wrap">${state.phases.map(p=>renderPhase(p)).join('')}</div>
@@ -275,20 +414,62 @@ function render() {
   const nameEl=document.getElementById('proj-name')
   if(nameEl){ let t; nameEl.addEventListener('input',()=>{ clearTimeout(t); t=setTimeout(()=>saveSetting('name',nameEl.textContent.trim()),700) }) }
   initSortable()
+  setTimeout(syncPhaseTitleWidths,0)
 }
 
 function renderSummary() {
   let total=0,done=0,doing=0,todo=0
-  const allTasks=Object.values(state.tasks).flat()
-  allTasks.forEach(t=>{ total++; if(t.status==='완료')done++; else if(t.status==='진행중')doing++; else todo++ })
-  const overallPct=allTasks.length>0?Math.round(allTasks.reduce((s,t)=>s+calcTaskProgress(t),0)/allTasks.length*100):0
+  Object.values(state.tasks).flat().forEach(t=>{
+    (t.subtasks||[]).forEach(s=>{
+      total++
+      if(s.done||s.status==='완료') done++
+      else if(s.status==='진행중') doing++
+      else todo++
+    })
+  })
+  const overallPct=total>0?Math.round(done/total*100):0
   const pctColor=overallPct===100?'#4ade80':overallPct>=50?'#fbbf24':'#60a5fa'
   return `<div class="summary">
-    <div class="sum-card c-blue"><div class="n">${total}</div><div class="l">전체 작업</div></div>
-    <div class="sum-card c-green"><div class="n">${done}</div><div class="l">완료</div></div>
-    <div class="sum-card c-yellow"><div class="n">${doing}</div><div class="l">진행중</div></div>
-    <div class="sum-card c-purple"><div class="n">${todo}</div><div class="l">예정</div></div>
+    <div class="sum-card c-blue" onclick="showTaskFilter('전체',this)"><div class="n">${total}</div><div class="l">전체 세부작업</div></div>
+    <div class="sum-card c-green" onclick="showTaskFilter('완료',this)"><div class="n">${done}</div><div class="l">완료</div></div>
+    <div class="sum-card c-yellow" onclick="showTaskFilter('진행중',this)"><div class="n">${doing}</div><div class="l">진행중</div></div>
+    <div class="sum-card c-purple" onclick="showTaskFilter('예정',this)"><div class="n">${todo}</div><div class="l">예정</div></div>
     <div class="sum-card"><div class="n" style="color:${pctColor}">${overallPct}%</div><div class="l">전체 진행율</div></div>
+  </div>
+  <div class="filter-panel" id="task-filter-panel" style="display:none"></div>`
+}
+
+function renderPhaseSummaryBar() {
+  const allTasks = Object.values(state.tasks).flat()
+  const overallPct = allTasks.length > 0
+    ? Math.round(allTasks.reduce((s,t)=>s+calcTaskProgress(t),0)/allTasks.length*100) : 0
+  const overallColor = overallPct===100?'#4ade80':overallPct>=50?'#fbbf24':'#60a5fa'
+
+  const items = state.phases.map(p => {
+    const tasks = state.tasks[p.id] || []
+    const pct = tasks.length > 0
+      ? Math.round(tasks.reduce((s,t)=>s+calcTaskProgress(t),0)/tasks.length*100) : 0
+    const colors = (p.gradient||'').match(/#[0-9a-f]{6}/gi)
+    const color = colors ? colors[colors.length-1] : '#64748b'
+    const pctColor = pct===100?'#4ade80':pct>=50?'#fbbf24':'#94a3b8'
+    return `<div class="psb-item" id="psb-${p.id}">
+      <div class="psb-top">
+        <span class="psb-name">${esc(p.title)}</span>
+        <span class="psb-pct" style="color:${pctColor}">${pct}%</span>
+      </div>
+      <div class="psb-bar"><div class="psb-fill" style="width:${pct}%;background:${color}"></div></div>
+    </div>`
+  }).join('')
+
+  return `<div class="phase-sumbar" id="phase-sumbar">
+    ${items}
+    <div class="psb-item">
+      <div class="psb-top">
+        <span class="psb-name" style="font-weight:700">전체</span>
+        <span class="psb-pct" style="color:${overallColor}">${overallPct}%</span>
+      </div>
+      <div class="psb-bar"><div class="psb-fill" style="width:${overallPct}%;background:${overallColor}"></div></div>
+    </div>
   </div>`
 }
 
@@ -298,7 +479,7 @@ function renderPhase(phase) {
   const pct=tasks.length>0?Math.round(tasks.reduce((s,t)=>s+calcTaskProgress(t),0)/tasks.length*100):0
   const pctColor=pct===100?'#4ade80':pct>=50?'#fbbf24':'#94a3b8'
 
-  const wkHeader='<th style="min-width:320px;width:320px">작업</th>'+
+  const wkHeader='<th style="min-width:220px">작업</th>'+
     WEEK_DATES.map((wd,i)=>{
       const d=new Date(wd), mo=d.getMonth()+1, da=d.getDate()
       return `<th class="wth"><span style="font-size:.65em;display:block">W${i+1}</span><span style="font-size:.58em;display:block;opacity:.5">${mo}/${da}</span></th>`
@@ -308,7 +489,14 @@ function renderPhase(phase) {
   <div class="phase-block" id="ph-${phase.id}">
     <div class="phase-header" style="background:${phase.gradient}" onclick="togglePhase('${phase.id}')">
       <span class="ph-drag" onclick="event.stopPropagation()" title="드래그하여 순서 변경">⠿</span>
-      <input class="ph-title-edit" value="${esc(phase.title)}" onclick="event.stopPropagation()" onblur="savePhaseTitle('${phase.id}',this.value)" onkeydown="if(event.key==='Enter')this.blur()">
+      <button class="ph-del-btn" onclick="event.stopPropagation();deletePhase('${phase.id}')" title="페이즈 삭제">×</button>
+      <div class="ph-title-wrap">
+        <span class="ph-title-text" id="phtitle-${phase.id}" contenteditable="false"
+          onclick="event.stopPropagation()"
+          onblur="savePhaseTitle('${phase.id}',this.textContent.trim());this.contentEditable='false'"
+          onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur()}">${esc(phase.title)}</span>
+        <button class="ph-edit-btn" onclick="event.stopPropagation();startEditPhaseTitle('${phase.id}')" title="제목 수정"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+      </div>
       <div class="ph-left" onclick="event.stopPropagation()">
         <input type="date" class="ph-date" value="${phase.start_date||''}" onchange="savePhase('${phase.id}',{start_date:this.value});updatePhaseDur(this)">
         <span style="opacity:.6">–</span>
@@ -316,8 +504,6 @@ function renderPhase(phase) {
         <span class="ph-dur" id="phdur-${phase.id}">${dur?'('+dur+')':''}</span>
         <span class="ph-pct" style="color:${pctColor}" id="ph-pct-${phase.id}">${pct}%</span>
       </div>
-      <div style="flex:1"></div>
-      <button class="task-del-btn" style="margin-left:6px;font-size:1em" onclick="event.stopPropagation();deletePhase('${phase.id}')" title="페이즈 삭제">×</button>
       <span class="ph-toggle" id="phtog-${phase.id}">▶</span>
     </div>
     <div class="gantt-wrap" id="phbody-${phase.id}" style="display:none">
@@ -337,21 +523,20 @@ function renderTask(t) {
   }).join('')
   const dur=calcDur(t.start_date,t.end_date)
   const aClass=t.assignee==='이순구'?'a-dev':t.assignee==='공동'?'a-both':'a-me'
-  const sClass=({'예정':'s-todo','진행중':'s-doing','완료':'s-done','보류':'s-hold','검토중':'s-review'}[t.status])||'s-todo'
   const pClass=t.priority==='high'?'p-high':t.priority==='low'?'p-low':'p-mid'
+  const subs=t.subtasks||[]
+  const allSubDone=subs.length>0&&subs.every(s=>s.done||s.status==='완료')
   return `
   <tbody class="task-group" id="tg-${t.id}">
-    <tr id="trow-${t.id}">
+    <tr class="task-main-row" id="trow-${t.id}">
       <td><div class="tcell">
         <div class="tmain">
           <span class="task-drag" title="드래그하여 순서 변경">⠿</span>
           <span class="pdot ${pClass}" onclick="cyclePriority('${t.id}')" style="cursor:pointer" title="우선순위"></span>
           <span class="tnum">${esc(t.task_num||'')}</span>
           <span class="ttitle" contenteditable="true" onblur="debounceSave('${t.id}',{title:this.textContent.trim()})">${esc(t.title)}</span>
+          <span class="task-done-badge" id="task-done-badge-${t.id}" ${allSubDone?'':'style="display:none"'}>완료</span>
           <button class="abtn ${aClass}" onclick="cycleAssignee('${t.id}')">${t.assignee||'이윤희'}</button>
-          <select class="sbtn ${sClass}" onchange="changeStatus('${t.id}',this.value)">
-            ${STATUSES.map(s=>`<option value="${s}" ${(t.status||'예정')===s?'selected':''}>${s}</option>`).join('')}
-          </select>
           <button class="task-del-btn" onclick="deleteTask('${t.id}')" title="작업 삭제">×</button>
         </div>
         <div class="tdates">
@@ -367,15 +552,18 @@ function renderTask(t) {
     </tr>
     <tr>
       <td class="tnote-td" colspan="${WEEK_DATES.length+1}">
+        <div class="mobile-gantt-wrap" id="mgw-${t.id}">
+          <div class="mob-gantt-inner">
+            ${WEEK_DATES.map(wd=>{
+              const b=(t.week_bars&&t.week_bars[wd])||''
+              const d=new Date(wd)
+              return `<div class="mob-wk"><div class="mob-wbar ${b||'w-empty'}" onclick="toggleWeekBar('${t.id}','${wd}')"></div><div class="mob-wlabel">${d.getMonth()+1}/${d.getDate()}</div></div>`
+            }).join('')}
+          </div>
+        </div>
         <div class="tnote" contenteditable="true" onblur="debounceSave('${t.id}',{note:this.textContent.trim()})">${esc(t.note||'')}</div>
         <div class="subtasks-wrap" id="stw-${t.id}">
-          ${(t.subtasks||[]).map((st,i)=>`
-          <div class="subtask-row" id="str-${t.id}-${i}">
-            <input type="checkbox" ${st.done?'checked':''} onchange="toggleSubtask('${t.id}',${i},this.checked)">
-            <span class="subtask-title ${st.done?'st-done':''}" contenteditable="true" onblur="editSubtask('${t.id}',${i},this.textContent.trim())">${esc(st.title)}</span>
-            <button class="st-del" onclick="deleteSubtask('${t.id}',${i})">×</button>
-          </div>`).join('')}
-          <button class="st-add-btn" onclick="addSubtask('${t.id}')">＋ 세부작업</button>
+          ${renderSubtaskList(t)}
         </div>
       </td>
     </tr>
@@ -424,6 +612,7 @@ function rerenderAllPhases() {
   wrap.innerHTML=state.phases.map(p=>renderPhase(p)).join('')
   initPhaseSortable()
   state.phases.forEach(p=>initTaskSortable(p.id))
+  setTimeout(syncPhaseTitleWidths,0)
 }
 
 // ─── 유틸 ───
@@ -458,7 +647,86 @@ async function savePhase(id,updates){
   const ph=state.phases.find(p=>p.id===id); if(ph) Object.assign(ph,updates)
   await db.from('tt_phases').update(updates).eq('id',id); showSaved()
 }
-async function savePhaseTitle(id,value){ await savePhase(id,{title:value}) }
+async function savePhaseTitle(id,value){ await savePhase(id,{title:value}); syncPhaseTitleWidths() }
+// ─── 대시보드 필터 ───
+let _activeFilter=null
+function showTaskFilter(type,el){
+  const panel=document.getElementById('task-filter-panel')
+  if(!panel) return
+  if(_activeFilter===type){
+    _activeFilter=null; panel.style.display='none'
+    document.querySelectorAll('.sum-card').forEach(c=>c.classList.remove('active'))
+    return
+  }
+  _activeFilter=type
+  document.querySelectorAll('.sum-card').forEach(c=>c.classList.remove('active'))
+  el.classList.add('active')
+
+  // 세부작업 단위로 수집
+  const allSubs=[]
+  Object.values(state.tasks).flat().forEach(t=>{
+    const phase=state.phases.find(p=>p.id===t.phase_id)
+    ;(t.subtasks||[]).forEach(s=>{ allSubs.push({sub:s,task:t,phase}) })
+  })
+  let filtered
+  if(type==='전체')     filtered=allSubs
+  else if(type==='완료') filtered=allSubs.filter(({sub})=>sub.done||sub.status==='완료')
+  else if(type==='진행중') filtered=allSubs.filter(({sub})=>!sub.done&&sub.status==='진행중')
+  else                 filtered=allSubs.filter(({sub})=>!sub.done&&sub.status!=='진행중')
+
+  const items=filtered.map(({sub,task,phase})=>{
+    const colors=(phase?.gradient||'').match(/#[0-9a-f]{6}/gi)
+    const phColor=colors?colors[colors.length-1]:'#64748b'
+    const isDone=sub.done||sub.status==='완료'
+    const stLabel=isDone?'완료':(sub.status||'예정')
+    const sClass={'완료':'s-done','진행중':'s-doing','예정':'s-todo'}[stLabel]||'s-todo'
+    const aClass=task.assignee==='이순구'?'a-dev':task.assignee==='공동'?'a-both':'a-me'
+    return `<div class="filter-item">
+      <span class="fi-phase" style="background:${phColor}22;color:${phColor};border:1px solid ${phColor}55">${esc(phase?.title||'-')}</span>
+      <span class="fi-num">${esc(task.task_num||'')}</span>
+      <span class="fi-title">${esc(sub.title)}</span>
+      <span class="abtn ${aClass} fi-a" style="font-size:0.63em;padding:1px 6px;flex-shrink:0;display:inline-block;text-align:center">${esc(task.assignee||'이윤희')}</span>
+      <span class="sbtn ${sClass} fi-s" style="font-size:0.62em;padding:1px 5px;flex-shrink:0;display:inline-block;text-align:center">${stLabel}</span>
+    </div>`
+  }).join('')
+
+  panel.style.display='block'
+  panel.innerHTML=`<div class="filter-panel-hdr">
+    <span>${type} <span style="opacity:.5;font-weight:400">${filtered.length}건</span></span>
+    <button class="filter-close" onclick="showTaskFilter('${type}',document.querySelector('.sum-card.active'))">×</button>
+  </div>${items||'<div class="filter-empty">해당하는 작업이 없습니다.</div>'}`
+  syncFilterWidths()
+}
+function syncFilterWidths(){
+  let maxPhase=0, maxNum=0, maxA=0, maxS=0
+  document.querySelectorAll('.fi-phase').forEach(el=>{ maxPhase=Math.max(maxPhase,el.scrollWidth) })
+  document.querySelectorAll('.fi-num').forEach(el=>{ maxNum=Math.max(maxNum,el.scrollWidth) })
+  document.querySelectorAll('.fi-a').forEach(el=>{ maxA=Math.max(maxA,el.scrollWidth) })
+  document.querySelectorAll('.fi-s').forEach(el=>{ maxS=Math.max(maxS,el.scrollWidth) })
+  if(maxPhase) document.querySelectorAll('.fi-phase').forEach(el=>{ el.style.width=maxPhase+'px' })
+  if(maxNum)   document.querySelectorAll('.fi-num').forEach(el=>{ el.style.width=maxNum+'px' })
+  if(maxA)     document.querySelectorAll('.fi-a').forEach(el=>{ el.style.width=maxA+'px' })
+  if(maxS)     document.querySelectorAll('.fi-s').forEach(el=>{ el.style.width=maxS+'px' })
+}
+
+function syncPhaseTitleWidths(){
+  // 제목 영역 통일
+  let maxTitle=0
+  document.querySelectorAll('.ph-title-text').forEach(el=>{ maxTitle=Math.max(maxTitle,el.scrollWidth) })
+  if(maxTitle) document.querySelectorAll('.ph-title-wrap').forEach(w=>{ w.style.width=(maxTitle+36)+'px' })
+  // 기간(xx주) 영역 통일
+  let maxDur=0
+  document.querySelectorAll('.ph-dur').forEach(el=>{ maxDur=Math.max(maxDur,el.scrollWidth) })
+  if(maxDur) document.querySelectorAll('.ph-dur').forEach(el=>{ el.style.display='inline-block'; el.style.width=maxDur+'px' })
+}
+function startEditPhaseTitle(id){
+  const el=document.getElementById('phtitle-'+id)
+  if(!el) return
+  el.contentEditable='true'
+  el.focus()
+  const range=document.createRange(); range.selectNodeContents(el); range.collapse(false)
+  window.getSelection().removeAllRanges(); window.getSelection().addRange(range)
+}
 async function saveSetting(key,value){
   state.settings[key]=value
   await db.from('tt_settings').update({[key]:value}).eq('id',1); showSaved()
@@ -560,15 +828,35 @@ async function toggleWeekBar(id,weekDate){
 }
 
 function calcTaskProgress(task){
-  if(task.status==='완료') return 1.0
-  if(task.status==='예정'||task.status==='보류') return 0.0
-  if(task.start_date&&task.end_date){
-    const today=new Date(), start=new Date(task.start_date), end=new Date(task.end_date)
-    const total=end-start
-    if(total<=0) return 1.0
-    return Math.min(Math.max((today-start)/total,0),1)
-  }
-  return task.status==='진행중'||task.status==='검토중' ? 0.5 : 0.0
+  const subs=task.subtasks||[]
+  if(subs.length===0) return 0.0
+  const done=subs.filter(s=>s.done||s.status==='완료').length
+  return done/subs.length
+}
+function renderSubtaskList(t){
+  return (t.subtasks||[]).map((st,i)=>{
+    const isDone=st.done||st.status==='완료'
+    const stStatus=isDone?'완료':(st.status||'예정')
+    return `<div class="subtask-row" id="str-${t.id}-${i}">
+      <input type="checkbox" ${isDone?'checked':''} onchange="toggleSubtask('${t.id}',${i},this.checked)">
+      <span class="subtask-title" contenteditable="true" onblur="editSubtask('${t.id}',${i},this.textContent.trim())">${esc(st.title)}</span>
+      ${isDone
+        ?`<span class="st-done-badge">완료</span>`
+        :`<select class="st-status-sel" onchange="setSubtaskStatus('${t.id}',${i},this.value)">
+            <option value="예정" ${stStatus==='예정'?'selected':''}>예정</option>
+            <option value="진행중" ${stStatus==='진행중'?'selected':''}>진행중</option>
+          </select>`
+      }
+      <button class="st-del" onclick="deleteSubtask('${t.id}',${i})">×</button>
+    </div>`
+  }).join('')+`<button class="st-add-btn" onclick="addSubtask('${t.id}')">＋ 세부작업</button>`
+}
+function updateTaskDoneBadge(taskId){
+  const task=findTask(taskId); if(!task) return
+  const subs=task.subtasks||[]
+  const allDone=subs.length>0&&subs.every(s=>s.done||s.status==='완료')
+  const badge=document.getElementById('task-done-badge-'+taskId)
+  if(badge) badge.style.display=allDone?'':'none'
 }
 function refreshAllPhasePcts(){
   state.phases.forEach(phase=>{
@@ -577,6 +865,8 @@ function refreshAllPhasePcts(){
     const el=document.getElementById('ph-pct-'+phase.id)
     if(el){el.textContent=pct+'%';el.style.color=pct===100?'#4ade80':pct>=50?'#fbbf24':'#94a3b8'}
   })
+  const sumbar=document.getElementById('phase-sumbar')
+  if(sumbar) sumbar.outerHTML=renderPhaseSummaryBar()
 }
 
 // ─── 페이즈 토글 ───
@@ -643,17 +933,34 @@ async function deleteTask(id){
 // ─── 세부작업 ───
 async function addSubtask(taskId){
   const task=findTask(taskId); if(!task) return
-  const subtasks=[...(task.subtasks||[]),{id:Date.now(),title:'새 세부작업',done:false}]
+  const subtasks=[...(task.subtasks||[]),{id:Date.now(),title:'새 세부작업',done:false,status:'예정'}]
   task.subtasks=subtasks
   await db.from('tt_tasks').update({subtasks}).eq('id',taskId)
   rerenderSubtasks(taskId); showSaved()
 }
 async function toggleSubtask(taskId,idx,done){
   const task=findTask(taskId); if(!task) return
-  const subtasks=[...(task.subtasks||[])]; subtasks[idx]={...subtasks[idx],done}; task.subtasks=subtasks
+  const subtasks=[...(task.subtasks||[])]
+  subtasks[idx]={...subtasks[idx],done,status:done?'완료':(subtasks[idx].status==='완료'?'예정':subtasks[idx].status||'예정')}
+  task.subtasks=subtasks
   await db.from('tt_tasks').update({subtasks}).eq('id',taskId)
-  const title=document.querySelector(`#str-${taskId}-${idx} .subtask-title`)
-  if(title) title.classList.toggle('st-done',done); showSaved()
+  rerenderSubtasks(taskId)
+  updateTaskDoneBadge(taskId)
+  refreshAllPhasePcts()
+  const sw=document.getElementById('summary-wrap'); if(sw) sw.innerHTML=renderSummary()
+  showSaved()
+}
+async function setSubtaskStatus(taskId,idx,status){
+  const task=findTask(taskId); if(!task) return
+  const subtasks=[...(task.subtasks||[])]
+  subtasks[idx]={...subtasks[idx],status,done:status==='완료'}
+  task.subtasks=subtasks
+  await db.from('tt_tasks').update({subtasks}).eq('id',taskId)
+  rerenderSubtasks(taskId)
+  updateTaskDoneBadge(taskId)
+  refreshAllPhasePcts()
+  const sw=document.getElementById('summary-wrap'); if(sw) sw.innerHTML=renderSummary()
+  showSaved()
 }
 async function editSubtask(taskId,idx,title){
   const task=findTask(taskId); if(!task||!task.subtasks?.[idx]) return
@@ -664,17 +971,16 @@ async function deleteSubtask(taskId,idx){
   const task=findTask(taskId); if(!task) return
   const subtasks=[...(task.subtasks||[])]; subtasks.splice(idx,1); task.subtasks=subtasks
   await db.from('tt_tasks').update({subtasks}).eq('id',taskId)
-  rerenderSubtasks(taskId); showSaved()
+  rerenderSubtasks(taskId)
+  updateTaskDoneBadge(taskId)
+  refreshAllPhasePcts()
+  const sw=document.getElementById('summary-wrap'); if(sw) sw.innerHTML=renderSummary()
+  showSaved()
 }
 function rerenderSubtasks(taskId){
   const task=findTask(taskId); if(!task) return
   const wrap=document.getElementById('stw-'+taskId); if(!wrap) return
-  wrap.innerHTML=(task.subtasks||[]).map((st,i)=>`
-    <div class="subtask-row" id="str-${taskId}-${i}">
-      <input type="checkbox" ${st.done?'checked':''} onchange="toggleSubtask('${taskId}',${i},this.checked)">
-      <span class="subtask-title ${st.done?'st-done':''}" contenteditable="true" onblur="editSubtask('${taskId}',${i},this.textContent.trim())">${esc(st.title)}</span>
-      <button class="st-del" onclick="deleteSubtask('${taskId}',${i})">×</button>
-    </div>`).join('')+`<button class="st-add-btn" onclick="addSubtask('${taskId}')">＋ 세부작업</button>`
+  wrap.innerHTML=renderSubtaskList(task)
 }
 
 // ─── 실시간 구독 ───
