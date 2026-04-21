@@ -3,20 +3,82 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CHABOJA ERP 타임테이블</title>
+<title>타임테이블</title>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
-  --bg:#0f172a; --bg2:#1e293b; --bg3:#0f172a; --bg4:#182030; --bg5:#243044;
-  --text:#e2e8f0; --text2:#94a3b8; --text3:#64748b; --text4:#475569;
-  --border:#334155; --input-bg:#0f172a; --note-ph:#2a3a4e;
-}
-body.light {
   --bg:#f1f5f9; --bg2:#ffffff; --bg3:#f8fafc; --bg4:#e2e8f0; --bg5:#dde4ef;
   --text:#1e293b; --text2:#475569; --text3:#64748b; --text4:#94a3b8;
-  --border:#e2e8f0; --input-bg:#f1f5f9; --note-ph:#cbd5e1;
+  --border:#e2e8f0; --input-bg:#f8fafc; --note-ph:#cbd5e1;
+  --row-upper:#e4eaf4; --row-lower:#ffffff;
 }
-body { font-family:'Malgun Gothic','Apple SD Gothic Neo',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; transition:background .25s,color .25s; }
+body { font-family:'Malgun Gothic','Apple SD Gothic Neo',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; }
+
+/* ─── 탭 바 ─── */
+.tabs-bar {
+  background:#dde6f0;
+  white-space:nowrap;
+  overflow-x:auto; scrollbar-width:none;
+  border-bottom:2px solid #1e3a5f;
+  padding:0 16px;
+  height:42px; line-height:42px;
+  font-size:0;
+}
+.tabs-bar::-webkit-scrollbar { display:none; }
+.tab-item {
+  display:inline-flex; align-items:center; gap:8px; vertical-align:top;
+  height:42px; padding:0 18px; cursor:pointer; font-size:13px; color:#64748b;
+  border-bottom:3px solid transparent; white-space:nowrap; user-select:none;
+  transition:color .15s,border-color .15s,background .15s;
+}
+.tab-item:hover { color:#94a3b8; background:#0f1f35; }
+.tab-item.active { color:#e2e8f0; border-bottom-color:#3b82f6; font-weight:600; background:#1e293b; }
+.tab-del {
+  display:inline-flex; align-items:center; justify-content:center;
+  background:none; border:none; color:#475569; cursor:pointer;
+  font-size:12px; width:16px; height:16px; border-radius:3px;
+  opacity:0; transition:opacity .15s; padding:0; vertical-align:middle; flex-shrink:0;
+}
+.tab-item:hover .tab-del, .tab-item.active .tab-del { opacity:1; }
+.tab-del:hover { background:rgba(239,68,68,0.25); color:#ef4444; }
+.tab-add-btn {
+  display:inline-flex; align-items:center; justify-content:center;
+  background:none; border:none; color:#475569; cursor:pointer;
+  font-size:18px; height:42px; padding:0 12px; vertical-align:top;
+  transition:color .15s; line-height:1;
+}
+.tab-add-btn:hover { color:#93c5fd; }
+.tabs-bar { border-bottom-color:#cbd5e1; }
+.tab-item.active { background:#ffffff; color:#1e40af; border-bottom-color:#2563eb; }
+.tab-item:hover { background:#d4dce8; color:#334155; }
+.tab-add-btn:hover { color:#2563eb; }
+
+/* ─── 마이그레이션 안내 모달 ─── */
+.migration-overlay {
+  position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:99999;
+  display:flex; align-items:center; justify-content:center; padding:20px;
+}
+.migration-box {
+  background:#1e293b; border:1px solid #334155; border-radius:14px;
+  padding:28px 32px; max-width:560px; width:100%;
+}
+.migration-box h2 { font-size:1.1em; margin-bottom:10px; color:#e2e8f0; }
+.migration-box p { font-size:0.82em; color:#94a3b8; margin-bottom:14px; line-height:1.6; }
+.migration-sql {
+  background:#0f172a; border:1px solid #334155; border-radius:8px;
+  padding:12px 16px; font-family:monospace; font-size:0.78em; color:#86efac;
+  white-space:pre; overflow-x:auto; margin-bottom:16px;
+}
+.migration-copy {
+  background:#1d4ed8; border:none; color:white; padding:8px 18px; border-radius:7px;
+  cursor:pointer; font-family:inherit; font-size:0.82em; margin-right:8px;
+}
+.migration-copy:hover { background:#2563eb; }
+.migration-dismiss {
+  background:none; border:1px solid #334155; color:#94a3b8; padding:8px 18px;
+  border-radius:7px; cursor:pointer; font-family:inherit; font-size:0.82em;
+}
+.migration-dismiss:hover { border-color:#94a3b8; color:#e2e8f0; }
 
 .header { background:linear-gradient(135deg,#1e3a8a,#2563eb); padding:20px 36px; display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; }
 .header h1 { font-size:1.3em; font-weight:800; }
@@ -71,25 +133,27 @@ body { font-family:'Malgun Gothic','Apple SD Gothic Neo',sans-serif; background:
 .ph-toggle.open { transform:rotate(90deg); }
 
 /* ─── 테이블 ─── */
-.gantt-wrap { background:var(--bg2); overflow-x:auto; }
+.gantt-wrap { background:var(--row-upper); overflow-x:auto; }
 .gtable { border-collapse:collapse; }
-.gtable thead th { background:var(--bg3); color:var(--text3); font-size:0.65em; font-weight:600; padding:6px 4px; border-bottom:1px solid var(--border); white-space:nowrap; text-align:left; }
+.gtable thead th { background:#d4dced; color:#475569; font-size:0.65em; font-weight:600; padding:6px 4px; border-bottom:1px solid #b8c4d8; white-space:nowrap; text-align:left; }
 .gtable th.wth { text-align:center; width:34px; min-width:34px; }
 .gtable tbody.task-group { border-bottom:1px solid var(--bg4); }
 .gtable tbody.task-group:last-of-type { border-bottom:none; }
 .gtable tbody.task-group.sortable-ghost { opacity:0.3; }
-.gtable tbody.task-group.sortable-chosen td { background:var(--bg5); }
-.gtable tbody.task-group tr:hover .tcell { background:var(--bg5); }
+.gtable tbody.task-group.sortable-chosen td { background:#e2eaf5; }
+.gtable tbody.task-group tr:hover .tcell { background:#e2eaf5; }
 .gtable tfoot td { padding:0; }
 
 /* ─── 작업 셀 ─── */
-.tcell { padding:8px 10px; background:var(--bg2); min-width:220px; display:flex; flex-direction:column; gap:4px; }
+.tcell { padding:8px 10px; background:var(--row-upper); min-width:220px; display:flex; flex-direction:column; gap:4px; }
 .tmain { display:flex; align-items:center; gap:5px; }
 .tnum { color:var(--text4); font-size:0.68em; min-width:18px; flex-shrink:0; }
 .ttitle { font-size:0.83em; outline:none; border-bottom:1px dashed transparent; line-height:1.4; cursor:text; color:var(--text); white-space:nowrap; }
 .ttitle:focus { border-bottom-color:#3b82f6; }
 .ttitle:empty:before { content:'작업명 입력...'; color:var(--text4); }
 .task-done-badge { font-size:0.63em; padding:1px 6px; border-radius:8px; background:#14532d; color:#86efac; flex-shrink:0; }
+.task-pct { font-size:0.68em; padding:2px 7px; border-radius:8px; background:#dc2626; color:#fff; font-weight:700; flex-shrink:0; white-space:nowrap; }
+.task-pct.done { background:#15803d; }
 
 .abtn,.sbtn { font-size:0.68em; padding:2px 7px; border-radius:10px; border:none; outline:none; font-family:inherit; cursor:pointer; white-space:nowrap; flex-shrink:0; }
 .a-me{background:#1d4ed8;color:#bfdbfe} .a-dev{background:#7c3aed;color:#ede9fe} .a-both{background:#065f46;color:#a7f3d0}
@@ -110,10 +174,10 @@ select.sbtn { appearance:none; -webkit-appearance:none; cursor:pointer; }
 .pdot { width:6px; height:6px; border-radius:50%; flex-shrink:0; }
 .p-high{background:#ef4444} .p-mid{background:#f59e0b} .p-low{background:#22c55e}
 
-.wcell { width:34px; min-width:34px; padding:4px 3px; text-align:center; background:var(--bg2); vertical-align:middle; }
+.wcell { width:34px; min-width:34px; padding:4px 3px; text-align:center; background:var(--row-upper); vertical-align:middle; }
 .wbar { height:26px; border-radius:4px; cursor:pointer; transition:opacity 0.15s; }
 .wbar:hover { opacity:0.8; }
-.w-empty  { background:transparent; border:1px dashed var(--border); }
+.w-empty  { background:rgba(255,255,255,0.5); border:1px dashed #9bacc8; }
 .w-todo   { background:#334155; }
 .w-doing  { background:linear-gradient(90deg,#92400e,#b45309); }
 .w-done   { background:linear-gradient(90deg,#14532d,#166534); }
@@ -122,10 +186,10 @@ select.sbtn { appearance:none; -webkit-appearance:none; cursor:pointer; }
 
 /* ─── 메모 / 세부작업 ─── */
 .tnote-td { padding:0 !important; }
-.tnote { font-size:0.68em; color:var(--text3); padding:2px 10px 4px 38px; background:var(--bg2); outline:none; border-bottom:1px dashed transparent; display:block; width:100%; }
+.tnote { font-size:0.68em; color:var(--text3); padding:2px 10px 4px 38px; background:var(--row-lower); outline:none; border-bottom:1px dashed transparent; display:block; width:100%; }
 .tnote:focus { border-bottom-color:#3b82f6; color:var(--text2); }
 .tnote:empty:before { content:'메모...'; color:var(--note-ph); }
-.subtasks-wrap { padding:2px 10px 6px 38px; background:var(--bg2); }
+.subtasks-wrap { padding:2px 10px 6px 38px; background:var(--row-lower); }
 .subtask-row { display:flex; align-items:center; gap:6px; padding:3px 0; }
 .subtask-row input[type=checkbox] { cursor:pointer; flex-shrink:0; }
 .subtask-title { font-size:0.72em; color:var(--text2); flex:1; outline:none; border-bottom:1px dashed transparent; cursor:text; }
@@ -144,13 +208,13 @@ select.sbtn { appearance:none; -webkit-appearance:none; cursor:pointer; }
 .add-phase-btn:hover { background:var(--bg2); color:var(--text2); border-color:var(--text3); }
 
 /* ─── 모바일 간트 (데스크탑 숨김) ─── */
-.mobile-gantt-wrap { display:none; overflow-x:auto; scrollbar-width:none; background:var(--bg2); }
+.mobile-gantt-wrap { display:none; overflow-x:auto; scrollbar-width:none; background:var(--row-upper); }
 .mobile-gantt-wrap::-webkit-scrollbar { display:none; }
 .mob-gantt-inner { display:flex; gap:3px; padding:6px 10px; }
 .mob-wk { display:flex; flex-direction:column; align-items:center; gap:2px; flex-shrink:0; }
 .mob-wbar { width:28px; height:16px; border-radius:3px; cursor:pointer; transition:opacity .15s; }
 .mob-wbar:hover { opacity:.75; }
-.mob-wbar.w-empty { background:transparent; border:1px dashed var(--border); }
+.mob-wbar.w-empty { background:rgba(255,255,255,0.5); border:1px dashed #9bacc8; }
 .mob-wbar.w-todo  { background:#334155; }
 .mob-wbar.w-doing { background:linear-gradient(90deg,#92400e,#b45309); }
 .mob-wbar.w-done  { background:linear-gradient(90deg,#14532d,#166534); }
@@ -183,7 +247,7 @@ select.sbtn { appearance:none; -webkit-appearance:none; cursor:pointer; }
 .phase-sumbar { background:var(--bg3); border-bottom:1px solid var(--border); padding:7px 36px; display:flex; align-items:stretch; overflow-x:auto; scrollbar-width:none; }
 .phase-sumbar::-webkit-scrollbar { display:none; }
 .psb-item { display:flex; flex-direction:column; gap:4px; padding:3px 14px; border-right:1px solid var(--border); flex-shrink:0; min-width:72px; }
-.psb-item:last-child { border-right:none; border-left:1px solid var(--border); margin-left:auto; }
+.psb-item:last-child { border-right:none; border-left:2px solid #3b82f6; margin-left:auto; background:#eff6ff; border-radius:0 6px 6px 0; padding:3px 18px; }
 .psb-top { display:flex; align-items:center; gap:6px; white-space:nowrap; }
 .psb-name { font-size:0.68em; color:var(--text2); }
 .psb-pct { font-size:0.7em; font-weight:700; }
@@ -197,6 +261,9 @@ select.sbtn { appearance:none; -webkit-appearance:none; cursor:pointer; }
 
 /* ─── 반응형: 모바일 ─── */
 @media (max-width:768px) {
+  .tabs-bar { padding:0 10px; min-height:38px; }
+  .tab-item { padding:0 12px; font-size:0.78em; }
+  .tab-add-btn { line-height:38px; padding:0 10px; }
   .header { padding:12px 14px; flex-direction:column; align-items:flex-start; gap:8px; }
   .header h1 { font-size:1.1em; }
   .header-sub { font-size:0.75em; gap:5px; flex-wrap:wrap; }
@@ -219,34 +286,23 @@ select.sbtn { appearance:none; -webkit-appearance:none; cursor:pointer; }
   .ph-left { flex-wrap:wrap; gap:4px; }
   .ph-date { width:90px; font-size:0.71em; }
   .ph-dur, .ph-pct { font-size:0.7em; }
-  /* 간트 테이블: 작업열만 전체폭, 주차열 숨김 */
   .gtable { width:100%; }
   .gtable th:first-child { min-width:0!important; width:100%!important; }
   .gtable th.wth { display:none; }
   .task-main-row td:nth-child(n+2) { display:none; }
   .tcell { min-width:0!important; max-width:100%!important; width:100%!important; box-sizing:border-box; }
-
-  /* 1행: 제목(말줄임) + 담당자 + 상태 */
   .tmain { flex-wrap:nowrap; gap:5px; }
   .ttitle { font-size:0.84em; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
   .tnum { font-size:0.65em; flex-shrink:0; }
   .abtn { font-size:0.68em; padding:2px 7px; flex-shrink:0; }
   .sbtn { font-size:0.66em; padding:2px 5px; flex-shrink:0; max-width:60px; }
   .task-del-btn { flex-shrink:0; }
-
-  /* 2행: 날짜 전체폭 */
   .tdates { padding-left:0; flex-wrap:nowrap; gap:5px; width:100%; }
   .tdlabel { font-size:0.65em; }
   .tdinput { flex:1; min-width:0; font-size:0.65em; }
   .tddur { font-size:0.63em; flex-shrink:0; }
-
-  /* 3행: 모바일 간트 표시 */
   .mobile-gantt-wrap { display:block; }
-
-  /* 메모 */
   .tnote { padding-left:10px; font-size:0.68em; }
-
-  /* 4행: 세부작업 2열 그리드 */
   .subtasks-wrap { display:grid; grid-template-columns:1fr 1fr; gap:1px; padding:2px 10px 6px; }
   .subtask-row { overflow:hidden; gap:4px; }
   .subtask-title { font-size:0.7em; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
@@ -272,13 +328,14 @@ select.sbtn { appearance:none; -webkit-appearance:none; cursor:pointer; }
 }
 
 @media print {
-  .add-btn,.add-phase-btn,.hdr-btn,.task-del-btn,.ph-drag,.task-drag,.save-indicator,.tip { display:none; }
+  .tabs-bar,.add-btn,.add-phase-btn,.hdr-btn,.task-del-btn,.ph-drag,.task-drag,.save-indicator,.tip { display:none; }
   .gantt-wrap { overflow:visible; }
   body { background:white; color:#1a1a2e; }
 }
 </style>
 </head>
 <body>
+<div id="tabs-bar"><div style="padding:12px 20px;font-size:0.78em;color:#475569">⏳</div></div>
 <div id="app"><div class="loading">⏳ 데이터 불러오는 중...</div></div>
 <div class="save-indicator" id="save-indicator">✓ 저장됨</div>
 
@@ -290,6 +347,10 @@ const SUPABASE_KEY = 'sb_publishable_9oZp0It0Nx4zd86JOYGKYQ_jMkuslhv'
 
 const { createClient } = supabase
 const db = createClient(SUPABASE_URL, SUPABASE_KEY)
+
+let projects = []
+let currentProjectId = null
+let subscriptionChannel = null
 
 let state = { settings:{}, phases:[], tasks:{} }
 let saveTimers = {}
@@ -310,7 +371,6 @@ const PH_GRADIENTS = [
 ]
 const PH_ICONS = ['📋','🗃️','💬','🚀','💰','🧮','📊','✅','🔧','⚡','🎯','📱']
 
-;(function(){ if(localStorage.getItem('theme')==='light') document.body.classList.add('light') })()
 
 // ─── 주간 계산 ───
 function getMonday(date) {
@@ -341,7 +401,6 @@ function computeWeekRange() {
   return weeks
 }
 
-// ─── week_bars 마이그레이션 (array → object) ───
 function migrateWeekBars(task) {
   if (Array.isArray(task.week_bars)) {
     const obj = {}
@@ -355,31 +414,159 @@ function migrateWeekBars(task) {
 // ─── 초기화 ───
 async function init() {
   try {
-    const [{ data:s },{ data:ph },{ data:tk }] = await Promise.all([
-      db.from('tt_settings').select('*').single(),
-      db.from('tt_phases').select('*').order('sort_order'),
-      db.from('tt_tasks').select('*').order('sort_order')
-    ])
-    state.settings = s || { name:'CHABOJA ERP 타임테이블', start_date:'2026-04-14', end_date:'2026-06-30' }
-    state.phases = ph || []
-    state.tasks = {}
+    const { data: projs, error: projError } = await db.from('tt_projects').select('*').order('id')
+    if (projError) throw projError
+
+    projects = projs || []
+    if (projects.length === 0) {
+      const { data: newProj, error: insError } = await db.from('tt_projects')
+        .insert({ name: 'CHABOJA ERP 타임테이블', start_date: '2026-04-14', end_date: '2026-06-30' })
+        .select().single()
+      if (insError) throw insError
+      projects = [newProj]
+    }
+
+    const savedId = parseInt(localStorage.getItem('activeProject') || '0')
+    const found = projects.find(p => p.id === savedId)
+    currentProjectId = found ? savedId : projects[0].id
+
+    renderTabs()
+    await loadProject(currentProjectId)
+  } catch(e) {
+    document.getElementById('app').innerHTML = '<div class="loading">❌ 연결 실패.<br><small>'+e.message+'</small></div>'
+  }
+}
+
+// ─── 프로젝트 데이터 로드 ───
+async function loadProject(id) {
+  currentProjectId = id
+  localStorage.setItem('activeProject', String(id))
+
+  document.getElementById('app').innerHTML = '<div class="loading">⏳ 불러오는 중...</div>'
+
+  const proj = projects.find(p => p.id === id)
+  state.settings = proj || {}
+
+  const { data: ph, error: phError } = await db.from('tt_phases').select('*').eq('project_id', id).order('sort_order')
+
+  if (phError && (phError.message||'').includes('project_id')) {
+    showMigrationNotice()
+    return
+  }
+
+  state.phases = ph || []
+  state.tasks = {}
+
+  const pIds = state.phases.map(p => p.id)
+  if (pIds.length > 0) {
+    const { data: tk } = await db.from('tt_tasks').select('*').in('phase_id', pIds).order('sort_order')
     ;(tk||[]).forEach(t => {
       migrateWeekBars(t)
-      if(!state.tasks[t.phase_id]) state.tasks[t.phase_id]=[]
+      if (!state.tasks[t.phase_id]) state.tasks[t.phase_id] = []
       state.tasks[t.phase_id].push(t)
     })
-    WEEK_DATES = computeWeekRange()
-    render()
-    subscribe()
-  } catch(e) {
-    document.getElementById('app').innerHTML='<div class="loading">❌ 연결 실패.<br><small>'+e.message+'</small></div>'
+  }
+
+  WEEK_DATES = computeWeekRange()
+  render()
+  subscribe()
+}
+
+// ─── 마이그레이션 안내 ───
+function showMigrationNotice() {
+  const sql = `ALTER TABLE tt_phases ADD COLUMN IF NOT EXISTS project_id integer DEFAULT 1;
+UPDATE tt_phases SET project_id = 1 WHERE project_id IS NULL;`
+  const overlay = document.createElement('div')
+  overlay.className = 'migration-overlay'
+  overlay.id = 'migration-overlay'
+  overlay.innerHTML = `
+    <div class="migration-box">
+      <h2>🔧 DB 마이그레이션 필요</h2>
+      <p>멀티 프로젝트 탭 기능을 사용하려면 Supabase에서 아래 SQL을 실행해야 합니다.<br>
+      <strong>Supabase → SQL Editor</strong>에서 실행해 주세요.</p>
+      <div class="migration-sql">${sql}</div>
+      <button class="migration-copy" onclick="navigator.clipboard.writeText(\`${sql}\`);this.textContent='✓ 복사됨'">📋 복사</button>
+      <button class="migration-dismiss" onclick="document.getElementById('migration-overlay')?.remove();loadProjectFallback()">일단 닫기</button>
+    </div>`
+  document.body.appendChild(overlay)
+}
+
+async function loadProjectFallback() {
+  // project_id 없이 전체 로드 (마이그레이션 전 임시 호환)
+  const { data: ph } = await db.from('tt_phases').select('*').order('sort_order')
+  const { data: tk } = await db.from('tt_tasks').select('*').order('sort_order')
+  const proj = projects.find(p => p.id === currentProjectId)
+  state.settings = proj || {}
+  state.phases = ph || []
+  state.tasks = {}
+  ;(tk||[]).forEach(t => {
+    migrateWeekBars(t)
+    if (!state.tasks[t.phase_id]) state.tasks[t.phase_id] = []
+    state.tasks[t.phase_id].push(t)
+  })
+  WEEK_DATES = computeWeekRange()
+  render()
+  subscribe()
+}
+
+// ─── 탭 렌더 ───
+function renderTabs() {
+  const bar = document.getElementById('tabs-bar')
+  if (!bar) return
+  const isLight = document.body.classList.contains('light')
+  bar.innerHTML = projects.map(p =>
+    `<div class="tab-item${p.id===currentProjectId?' active':''}" onclick="switchProject(${p.id})"><span>${esc(p.name)}</span>${projects.length>1?`<button class="tab-del" onclick="event.stopPropagation();deleteProject(${p.id})" title="삭제">×</button>`:''}</div>`
+  ).join('') + `<button class="tab-add-btn" onclick="addProject()" title="새 프로젝트">＋</button>`
+}
+
+// ─── 프로젝트 전환 ───
+async function switchProject(id) {
+  if (id === currentProjectId) return
+  renderTabs()
+  // active 탭 즉시 반영
+  document.querySelectorAll('.tab-item').forEach(el => {
+    el.classList.toggle('active', el.onclick?.toString().includes('('+id+')'))
+  })
+  await loadProject(id)
+}
+
+// ─── 프로젝트 추가 ───
+async function addProject() {
+  const name = prompt('새 프로젝트 이름을 입력하세요:', '새 프로젝트')
+  if (!name || !name.trim()) return
+
+  const { data, error } = await db.from('tt_projects')
+    .insert({ name: name.trim(), start_date: null, end_date: null })
+    .select().single()
+  if (error || !data) { alert('프로젝트 추가 실패: ' + (error?.message||'')); return }
+
+  projects.push(data)
+  renderTabs()
+  await loadProject(data.id)
+}
+
+// ─── 프로젝트 삭제 ───
+async function deleteProject(id) {
+  const proj = projects.find(p => p.id === id)
+  if (!confirm('"' + (proj?.name||'') + '" 프로젝트를 삭제하시겠습니까?\n모든 페이즈와 작업이 함께 삭제됩니다.')) return
+
+  const { data: phList } = await db.from('tt_phases').select('id').eq('project_id', id)
+  const phaseIds = (phList||[]).map(p => p.id)
+  if (phaseIds.length > 0) await db.from('tt_tasks').delete().in('phase_id', phaseIds)
+  await db.from('tt_phases').delete().eq('project_id', id)
+  await db.from('tt_projects').delete().eq('id', id)
+
+  projects = projects.filter(p => p.id !== id)
+  const next = projects[0]
+  if (next) {
+    renderTabs()
+    await loadProject(next.id)
   }
 }
 
 // ─── 렌더 ───
 function render() {
   const s = state.settings
-  const isLight = document.body.classList.contains('light')
   document.getElementById('app').innerHTML = `
     <div class="header">
       <div>
@@ -394,7 +581,6 @@ function render() {
       </div>
       <div class="hdr-btns">
         <span class="badge">🔵 이윤희 &nbsp;🟣 이순구 &nbsp;🟢 공동</span>
-        <button id="theme-btn" class="hdr-btn" onclick="toggleTheme()">${isLight?'🌙 다크':'☀️ 라이트'}</button>
         <button class="hdr-btn" onclick="window.print()">🖨 인쇄</button>
       </div>
     </div>
@@ -411,10 +597,22 @@ function render() {
       <div id="phases-wrap">${state.phases.map(p=>renderPhase(p)).join('')}</div>
       <button class="add-phase-btn" onclick="addPhase()">＋ 페이즈 추가</button>
     </div>`
-  const nameEl=document.getElementById('proj-name')
-  if(nameEl){ let t; nameEl.addEventListener('input',()=>{ clearTimeout(t); t=setTimeout(()=>saveSetting('name',nameEl.textContent.trim()),700) }) }
+  const nameEl = document.getElementById('proj-name')
+  if (nameEl) {
+    let t
+    nameEl.addEventListener('input', () => {
+      clearTimeout(t)
+      t = setTimeout(() => {
+        const name = nameEl.textContent.trim()
+        saveSetting('name', name)
+        const proj = projects.find(p => p.id === currentProjectId)
+        if (proj) proj.name = name
+        renderTabs()
+      }, 700)
+    })
+  }
   initSortable()
-  setTimeout(syncPhaseTitleWidths,0)
+  setTimeout(syncPhaseTitleWidths, 0)
 }
 
 function renderSummary() {
@@ -434,7 +632,7 @@ function renderSummary() {
     <div class="sum-card c-green" onclick="showTaskFilter('완료',this)"><div class="n">${done}</div><div class="l">완료</div></div>
     <div class="sum-card c-yellow" onclick="showTaskFilter('진행중',this)"><div class="n">${doing}</div><div class="l">진행중</div></div>
     <div class="sum-card c-purple" onclick="showTaskFilter('예정',this)"><div class="n">${todo}</div><div class="l">예정</div></div>
-    <div class="sum-card"><div class="n" style="color:${pctColor}">${overallPct}%</div><div class="l">전체 진행율</div></div>
+    <div class="sum-card"><div class="n" style="color:${pctColor}">${overallPct}%</div><div class="l">세부작업 진행율</div></div>
   </div>
   <div class="filter-panel" id="task-filter-panel" style="display:none"></div>`
 }
@@ -465,8 +663,8 @@ function renderPhaseSummaryBar() {
     ${items}
     <div class="psb-item">
       <div class="psb-top">
-        <span class="psb-name" style="font-weight:700">전체</span>
-        <span class="psb-pct" style="color:${overallColor}">${overallPct}%</span>
+        <span class="psb-name" style="font-weight:800;font-size:0.75em;color:#1e40af">전체 진행율</span>
+        <span class="psb-pct" style="color:${overallColor};font-size:0.9em;font-weight:800">${overallPct}%</span>
       </div>
       <div class="psb-bar"><div class="psb-fill" style="width:${overallPct}%;background:${overallColor}"></div></div>
     </div>
@@ -487,7 +685,7 @@ function renderPhase(phase) {
 
   return `
   <div class="phase-block" id="ph-${phase.id}">
-    <div class="phase-header" style="background:${phase.gradient}" onclick="togglePhase('${phase.id}')">
+    <div class="phase-header" id="phhdr-${phase.id}" style="background:linear-gradient(to right,transparent ${pct}%,rgba(0,0,0,0.42) ${pct}%),${phase.gradient}" onclick="togglePhase('${phase.id}')">
       <span class="ph-drag" onclick="event.stopPropagation()" title="드래그하여 순서 변경">⠿</span>
       <button class="ph-del-btn" onclick="event.stopPropagation();deletePhase('${phase.id}')" title="페이즈 삭제">×</button>
       <div class="ph-title-wrap">
@@ -526,6 +724,8 @@ function renderTask(t) {
   const pClass=t.priority==='high'?'p-high':t.priority==='low'?'p-low':'p-mid'
   const subs=t.subtasks||[]
   const allSubDone=subs.length>0&&subs.every(s=>s.done||s.status==='완료')
+  const subDone=subs.filter(s=>s.done||s.status==='완료').length
+  const taskPct=subs.length>0?Math.round(subDone/subs.length*100):null
   return `
   <tbody class="task-group" id="tg-${t.id}">
     <tr class="task-main-row" id="trow-${t.id}">
@@ -536,6 +736,7 @@ function renderTask(t) {
           <span class="tnum">${esc(t.task_num||'')}</span>
           <span class="ttitle" contenteditable="true" onblur="debounceSave('${t.id}',{title:this.textContent.trim()})">${esc(t.title)}</span>
           <span class="task-done-badge" id="task-done-badge-${t.id}" ${allSubDone?'':'style="display:none"'}>완료</span>
+          ${taskPct!==null?`<span class="task-pct${taskPct===100?' done':''}" id="tprog-${t.id}">${taskPct}%</span>`:`<span class="task-pct" id="tprog-${t.id}" style="display:none">0%</span>`}
           <button class="abtn ${aClass}" onclick="cycleAssignee('${t.id}')">${t.assignee||'이윤희'}</button>
           <button class="task-del-btn" onclick="deleteTask('${t.id}')" title="작업 삭제">×</button>
         </div>
@@ -604,7 +805,6 @@ function initTaskSortable(phaseId) {
   })
 }
 
-// ─── 전체 재렌더 (주간 범위 변경 시) ───
 function rerenderAllPhases() {
   WEEK_DATES = computeWeekRange()
   const wrap=document.getElementById('phases-wrap')
@@ -627,12 +827,6 @@ function showSaved(){
   el.classList.add('show'); setTimeout(()=>el.classList.remove('show'),1500)
 }
 function findTask(id){ return Object.values(state.tasks).flat().find(t=>t.id===id) }
-function toggleTheme(){
-  const isLight=document.body.classList.toggle('light')
-  localStorage.setItem('theme',isLight?'light':'dark')
-  const btn=document.getElementById('theme-btn')
-  if(btn) btn.textContent=isLight?'🌙 다크':'☀️ 라이트'
-}
 
 // ─── DB 저장 ───
 async function saveTask(id,updates){
@@ -648,6 +842,13 @@ async function savePhase(id,updates){
   await db.from('tt_phases').update(updates).eq('id',id); showSaved()
 }
 async function savePhaseTitle(id,value){ await savePhase(id,{title:value}); syncPhaseTitleWidths() }
+
+async function saveSetting(key,value){
+  state.settings[key]=value
+  await db.from('tt_projects').update({[key]:value}).eq('id',currentProjectId)
+  showSaved()
+}
+
 // ─── 대시보드 필터 ───
 let _activeFilter=null
 function showTaskFilter(type,el){
@@ -662,7 +863,6 @@ function showTaskFilter(type,el){
   document.querySelectorAll('.sum-card').forEach(c=>c.classList.remove('active'))
   el.classList.add('active')
 
-  // 세부작업 단위로 수집
   const allSubs=[]
   Object.values(state.tasks).flat().forEach(t=>{
     const phase=state.phases.find(p=>p.id===t.phase_id)
@@ -710,11 +910,9 @@ function syncFilterWidths(){
 }
 
 function syncPhaseTitleWidths(){
-  // 제목 영역 통일
   let maxTitle=0
   document.querySelectorAll('.ph-title-text').forEach(el=>{ maxTitle=Math.max(maxTitle,el.scrollWidth) })
   if(maxTitle) document.querySelectorAll('.ph-title-wrap').forEach(w=>{ w.style.width=(maxTitle+36)+'px' })
-  // 기간(xx주) 영역 통일
   let maxDur=0
   document.querySelectorAll('.ph-dur').forEach(el=>{ maxDur=Math.max(maxDur,el.scrollWidth) })
   if(maxDur) document.querySelectorAll('.ph-dur').forEach(el=>{ el.style.display='inline-block'; el.style.width=maxDur+'px' })
@@ -726,10 +924,6 @@ function startEditPhaseTitle(id){
   el.focus()
   const range=document.createRange(); range.selectNodeContents(el); range.collapse(false)
   window.getSelection().removeAllRanges(); window.getSelection().addRange(range)
-}
-async function saveSetting(key,value){
-  state.settings[key]=value
-  await db.from('tt_settings').update({[key]:value}).eq('id',1); showSaved()
 }
 
 // ─── 날짜/주간 업데이트 ───
@@ -857,6 +1051,15 @@ function updateTaskDoneBadge(taskId){
   const allDone=subs.length>0&&subs.every(s=>s.done||s.status==='완료')
   const badge=document.getElementById('task-done-badge-'+taskId)
   if(badge) badge.style.display=allDone?'':'none'
+  const done=subs.filter(s=>s.done||s.status==='완료').length
+  const pctEl=document.getElementById('tprog-'+taskId)
+  if(pctEl){
+    if(subs.length===0){ pctEl.style.display='none'; return }
+    const pct=Math.round(done/subs.length*100)
+    pctEl.textContent=pct+'%'
+    pctEl.style.display=''
+    pctEl.className='task-pct'+(pct===100?' done':'')
+  }
 }
 function refreshAllPhasePcts(){
   state.phases.forEach(phase=>{
@@ -864,6 +1067,8 @@ function refreshAllPhasePcts(){
     const pct=tasks.length>0?Math.round(tasks.reduce((s,t)=>s+calcTaskProgress(t),0)/tasks.length*100):0
     const el=document.getElementById('ph-pct-'+phase.id)
     if(el){el.textContent=pct+'%';el.style.color=pct===100?'#4ade80':pct>=50?'#fbbf24':'#94a3b8'}
+    const hdr=document.getElementById('phhdr-'+phase.id)
+    if(hdr) hdr.style.background=`linear-gradient(to right,transparent ${pct}%,rgba(0,0,0,0.42) ${pct}%),${phase.gradient}`
   })
   const sumbar=document.getElementById('phase-sumbar')
   if(sumbar) sumbar.outerHTML=renderPhaseSummaryBar()
@@ -881,7 +1086,13 @@ function togglePhase(id){
 async function addPhase(){
   const newOrder=state.phases.length+1
   const {data,error}=await db.from('tt_phases')
-    .insert({title:'새 페이즈',icon:PH_ICONS[(newOrder-1)%PH_ICONS.length],gradient:PH_GRADIENTS[(newOrder-1)%PH_GRADIENTS.length],sort_order:newOrder})
+    .insert({
+      title:'새 페이즈',
+      icon:PH_ICONS[(newOrder-1)%PH_ICONS.length],
+      gradient:PH_GRADIENTS[(newOrder-1)%PH_GRADIENTS.length],
+      sort_order:newOrder,
+      project_id:currentProjectId
+    })
     .select().single()
   if(error||!data){alert('페이즈 추가 실패: '+(error?.message||''));return}
   state.phases.push(data); state.tasks[data.id]=[]
@@ -936,7 +1147,11 @@ async function addSubtask(taskId){
   const subtasks=[...(task.subtasks||[]),{id:Date.now(),title:'새 세부작업',done:false,status:'예정'}]
   task.subtasks=subtasks
   await db.from('tt_tasks').update({subtasks}).eq('id',taskId)
-  rerenderSubtasks(taskId); showSaved()
+  rerenderSubtasks(taskId)
+  updateTaskDoneBadge(taskId)
+  refreshAllPhasePcts()
+  const sw=document.getElementById('summary-wrap'); if(sw) sw.innerHTML=renderSummary()
+  showSaved()
 }
 async function toggleSubtask(taskId,idx,done){
   const task=findTask(taskId); if(!task) return
@@ -985,8 +1200,10 @@ function rerenderSubtasks(taskId){
 
 // ─── 실시간 구독 ───
 function subscribe(){
-  db.channel('timetable-live')
+  if(subscriptionChannel) db.removeChannel(subscriptionChannel)
+  subscriptionChannel = db.channel('timetable-live-'+currentProjectId)
     .on('postgres_changes',{event:'UPDATE',schema:'public',table:'tt_tasks'},({new:t})=>{
+      if(!findTask(t.id)) return
       const task=findTask(t.id); if(task){ migrateWeekBars(t); Object.assign(task,t) }
       const row=document.getElementById('trow-'+t.id)
       if(row){
@@ -998,8 +1215,8 @@ function subscribe(){
       }
     })
     .on('postgres_changes',{event:'INSERT',schema:'public',table:'tt_tasks'},({new:t})=>{
+      if(!state.tasks[t.phase_id]) return
       migrateWeekBars(t)
-      if(!state.tasks[t.phase_id]) state.tasks[t.phase_id]=[]
       if(!state.tasks[t.phase_id].find(x=>x.id===t.id)){
         state.tasks[t.phase_id].push(t)
         const table=document.getElementById('gtable-'+t.phase_id)
@@ -1008,6 +1225,7 @@ function subscribe(){
       }
     })
     .on('postgres_changes',{event:'INSERT',schema:'public',table:'tt_phases'},({new:p})=>{
+      if(p.project_id!==currentProjectId) return
       if(!state.phases.find(x=>x.id===p.id)){
         state.phases.push(p); state.tasks[p.id]=[]
         const wrap=document.getElementById('phases-wrap')
